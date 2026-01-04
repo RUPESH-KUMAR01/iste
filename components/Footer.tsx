@@ -3,11 +3,12 @@ import React from 'react'
 import { PiLinkedinLogoFill } from "react-icons/pi";
 import { PiInstagramLogoFill } from "react-icons/pi";
 import { MdEmail } from "react-icons/md";
+import Link from 'next/link';
 
 const Footer = () => {
   return (
 
-    <div className='w-full flex bg-background flex-col items-center'>
+    <div className='w-full flex bg-transperant backdrop-blur-xs flex-col items-center'>
         <div className='w-[80%] flex justify-between gap-10'>
             <div className="h-64 w-64 relative">
             <Image 
@@ -19,35 +20,16 @@ const Footer = () => {
             />
             </div>
             <div className='mt-12'>
-                <p>Quick Access</p>
-                <div className='flex text-base mt-4 gap-0.5 text-gray-400 flex-col'>
+                <p className='text-center'>Quick Access</p>
+                <div className='flex text-base mt-4 gap-10 text-gray-400 '>
                     <a href='#home' className='hover:text-primary'>Home</a>
                     <a href='#about' className='hover:text-primary'>About</a>
                     <a href='#sigs' className='hover:text-primary'>Sigs</a>
                     <a href='#events' className='hover:text-primary'>Events</a>
-                    <p>Members</p>
+                    <Link href={"/she"}  className='hover:text-primary'>SHE</Link>
+                    <Link href={"/members"} className='hover:text-primary'>Members</Link>
                 </div>
 
-            </div>
-
-            <div className='mt-12 flex items-center flex-col'>
-                <p>Sigs</p>
-                <div className='flex gap-5 mt-4 text-gray-400 text-base'>
-                    <div className='flex flex-col underline items-center'>
-                        <p className='cursor-pointer'>Chronicle</p>
-                        <p className='cursor-pointer'>Catalyst</p>
-                        <p className='cursor-pointer'>Charge</p>
-                        <p className='cursor-pointer'>Clutch</p>
-                    </div>
-                        
-                    <div className='flex flex-col underline items-center'>
-                        <p className='cursor-pointer'>Concrete</p>
-                        <p className='cursor-pointer'>Create</p>
-                        <p className='cursor-pointer'>Credit</p>
-                        <p className='cursor-pointer'>Crypt</p>
-                    </div>
-                </div>
-                    
             </div>
 
             <div className='flex gap-5 pr-10 flex-col mt-12 items-center '>

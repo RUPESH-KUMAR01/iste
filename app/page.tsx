@@ -1,6 +1,4 @@
 "use client";
-import Footer from "@/components/Footer";
-import LiquidEther from "@/components/LiquidEther";
 import About from "@/components/About";
 import { SigCard } from "@/components/SigCard";
 
@@ -50,9 +48,6 @@ export default function Home() {
           </p>
         </div>
       </section>
-
-      <Footer/>
-
     </main>
   );
 }

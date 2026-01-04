@@ -7,7 +7,7 @@ export default function NavBar() {
 
 
   return (<>
-    <div className={`fixed top-0 left-0 right-0 z-50 flex justify-center transition-all duration-300 pt-4`}>
+    <div className={`fixed top-0 left-0 right-0 z-50 flex justify-center transition-all duration-300 pt-4 backdrop-blur-xs`}>
         <div 
           className={`
             flex items-center justify-between bg-surface/70 text-foreground shadow-md transition-all duration-500 ease-in-out
@@ -30,9 +30,10 @@ export default function NavBar() {
         </Link>
 
         <div className="font-sans text-sm font-semibold gap-6 flex">
-          <a href="#home" className="hover:text-primary transition-colors">Home</a>
-          <a href="#about" className="hover:text-primary transition-colors">About</a>
-          <a href="#sigs" className="hover:text-primary transition-colors">SIGs</a>
+          <Link href={"/"} className="hover:text-primary transition-colors">Home</Link>
+          <Link href={"/#about"} className="hover:text-primary transition-colors">About</Link>
+          <Link href={"/sigs"} className="hover:text-primary transition-colors">SIGs</Link>
+          <Link href={"/members"} className="hover:text-primary transition-colors">Members</Link>
           <a href="#events" className="hover:text-primary transition-colors">Events</a>
           <a href="#contact" className="hover:text-primary transition-colors">Contact</a>
         </div>

@@ -10,7 +10,7 @@ export default function About() {
                 We are dedicated to fostering technical knowledge, innovation, and professional development among students through various activities, workshops, and events.</p>
         </div>
         <div>
-          <Image src="/download (1).png" alt="ISTE" width={450} height={450} className="" />
+          <Image src="/download (1).png" alt="ISTE" width={450} height={450} />
         </div>
       </div>
   
@@ -26,7 +26,7 @@ export default function About() {
       <div className="flex items-center justify-start gap-16 w-full">
         <div className="flex flex-col gap-4 w-[62%]">
             <div className="text-4xl font-bold font-display text-white mb-4"><span className="">ISTE</span> <span className="text-pink-500">SHE</span></div>
-            <p className="text-base text-muted border-l-4 border-pink-500 pl-4">The Society for Her Empowerment (SHE) is a women's group that focuses on helping female students in ISTE NITK advance in their careers in engineering, business, and everything beyond.
+            <p className="text-base text-muted border-l-4 border-pink-500 pl-4">The Society for Her Empowerment (SHE) is a women&apos;s group that focuses on helping female students in ISTE NITK advance in their careers in engineering, business, and everything beyond.
                  This group is dedicated to empowering women and providing them with the tools and resources they need to succeed in any environment. 
                  Through a plethora of events, we aim to create valuable and career-defining milestones for women and support their cause 
                  in pursuing a career of their choice.</p>
