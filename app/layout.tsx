@@ -7,10 +7,7 @@ import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "ISTE NITK",
-  description: "A student chapter website for ISTE",
-  icons: {
-    icon: "/download.png",
-  },
+  description: "A student chapter website for ISTE"
 };
 
 export default function RootLayout({

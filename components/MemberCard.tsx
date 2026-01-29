@@ -9,24 +9,6 @@ export interface Member {
   linkedin: string
 }
 
-const getDriveImageUrl = (url: string | null) => {
-  if (!url) return '/tparentastro.png'
-
-  // Check if it's a Google Drive URL
-  if (url.includes('drive.google.com')) {
-    // Extract file ID from various Google Drive URL formats
-    const idMatch = url.match(/[-\w]{25,}/)
-    if (idMatch) {
-      const fileId = idMatch[0]
-      // Use thumbnail API which is more reliable for public files
-      // sz parameter controls size: w1000 = width 1000px
-      return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`
-    }
-  }
-
-  // Return the URL as-is if it's not a Google Drive URL
-  return url || '/tparentastro.png'
-}
 
 const MemberCard = ({ name, sig, post, image, linkedin }: Member) => {
   return (
@@ -36,7 +18,7 @@ const MemberCard = ({ name, sig, post, image, linkedin }: Member) => {
       <div className="w-[280px] h-[280px] relative shrink-0">
         <div className="w-full h-full overflow-hidden rounded-full">
           <img
-            src={getDriveImageUrl(image)}
+            src={image || "/trasparento.jpg"}
             alt="profile"
             className="w-full h-full object-cover"
           />
