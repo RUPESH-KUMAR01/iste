@@ -2,6 +2,8 @@
 
 import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import { Navbar as SpaceNavbar } from "@/components/shared/Navbar";
+import { SparklesCore } from "@/components/ui/sparkles";
 import NavBar from "@/components/NavBar";
 import ParticlesBackground from "@/components/ParticlesBackground";
 import Footer from "@/components/Footer";
@@ -13,9 +15,36 @@ type RouteChromeProps = {
 export default function RouteChrome({ children }: RouteChromeProps) {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
+  const isTeamPage = pathname === "/team";
+  const useSpaceThemeChrome = isHomePage || isTeamPage;
 
-  if (isHomePage) {
-    return <>{children}</>;
+  if (useSpaceThemeChrome) {
+    return (
+      <div className="min-h-screen bg-black text-white flex flex-col">
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 z-[-1] pointer-events-none bg-linear-to-b from-teal-400/10 via-[#020812]/68 to-black/92"
+        />
+
+        <div className="fixed inset-0 z-0 pointer-events-none">
+          <SparklesCore
+            id="tsparticlesfullpage"
+            background="transparent"
+            minSize={0.6}
+            maxSize={1.4}
+            particleDensity={100}
+            className="w-full h-full"
+            particleColor="#4fd1c5"
+          />
+        </div>
+
+        <div className="relative z-50">
+          <SpaceNavbar />
+        </div>
+
+        <main className="relative z-10 grow pointer-events-auto">{children}</main>
+      </div>
+    );
   }
 
   return (
