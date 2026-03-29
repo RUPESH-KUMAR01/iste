@@ -287,6 +287,7 @@ export const sigs = [
     }
   ];
 
+<<<<<<< HEAD
 export const Events: Normalevent[] = [
   {
     title: "Scotland Yard",
@@ -305,5 +306,13 @@ export const Events: Normalevent[] = [
     description: "An immersive experience designed to push boundaries and inspire innovation. Participants engage in challenges that transcend traditional thinking, combining elements of strategy, creativity, and teamwork. This event encourages participants to break barriers, collaborate across teams, and discover new perspectives through engaging and thought-provoking activities.",
     image: "/transcend.png",
     link: "/events/transcend" // Added internal link placeholder
+=======
+
+export const Events: Normalevent[] = [
+  {
+    title: "Hello",
+    description: "No description",
+    image: "",
+>>>>>>> 12780d9c685535fc45236143eb5c584038296f50
   }
 ]
