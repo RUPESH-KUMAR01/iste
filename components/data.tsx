@@ -72,7 +72,7 @@ export const executiveCore: Member[] = [
     name: "Suveena Sadashiv",
     sig: "Executive Core",
     post: "Crypt SIG Head",
-    image: "https://media.licdn.com/dms/image/v2/D5603AQGgFkUyOGQlcQ/profile-displayphoto-shrink_800_800/B56ZavKqFJGsAg-/0/1746695533581?e=1771459200&v=beta&t=boKIvfjVQBGPUKgMSSisGuy84-xkZoHomrCpaxCCk_c",
+    image: "",
     linkedin: "https://www.linkedin.com/in/suveena-sadashiv-73560b297/"
   },
   {
@@ -86,7 +86,7 @@ export const executiveCore: Member[] = [
     name: "Nisarg Rajdeep",
     sig: "Executive Core",
     post: "Chronicle SIG Head",
-    image: "https://media.licdn.com/dms/image/v2/D4D03AQFfVA02xQgcnQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1713370526550?e=1771459200&v=beta&t=3jx6diAXo4gfXhrs0eqii-rhurmOyuKZT6Sy9kv2lNk",
+    image: "",
     linkedin: "https://www.linkedin.com/in/nisarg-rajdeep-4608a8276/"
   },
   {
@@ -107,7 +107,7 @@ export const executiveCore: Member[] = [
     name: "Divyanshu Ratnakar",
     sig: "Executive Core",
     post: "Catalyst SIG Head",
-    image: "https://media.licdn.com/dms/image/v2/D5603AQGZa1yXkWZe3Q/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1729502450975?e=1771459200&v=beta&t=fSYRgNL34_Ma0_1A8wsjbIf2FKQLgMDOhRzGtBuLWxc",
+    image: "",
     linkedin: "https://www.linkedin.com/in/divyanshu-ratnakar-863550297/"
   },
   {
@@ -121,14 +121,14 @@ export const executiveCore: Member[] = [
     name: "Pallavi Parage",
     sig: "Executive Core",
     post: "Charge SIG Head",
-    image: "https://media.licdn.com/dms/image/v2/D5603AQGjE8m3J7lpMw/profile-displayphoto-crop_800_800/B56ZtW0I17JMAI-/0/1766688070800?e=1771459200&v=beta&t=3LWeNlZhfBBcwMenpns-Eim2HeIPzj2ZplUaCCc2jjg",
+    image: "",
     linkedin: "https://www.linkedin.com/in/pallavi-parage-32a1b0279/"
   },
   {
     name: "poorva bhagwat",
     sig: "Executive Core",
     post: "Credit SIG Head",
-    image: "https://media.licdn.com/dms/image/v2/D4D03AQFekEJEKMkJCg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1724442199387?e=1771459200&v=beta&t=Tf4g3oH-jDXefkBpwg3sahBj6j_Us_TiHfYQZRXd-Yc",
+    image: "",
     linkedin: "https://www.linkedin.com/in/poorva-bhagwat/"
   },
   {
@@ -142,14 +142,14 @@ export const executiveCore: Member[] = [
     name: "Shambavi Jha",
     sig: "Executive Core",
     post: "Concrete SIG Head",
-    image: "https://media.licdn.com/dms/image/v2/D4E03AQFgC-PrZdesVw/profile-displayphoto-crop_800_800/B4EZjHfFk8HEAI-/0/1755693473556?e=1771459200&v=beta&t=nozq-wBLLGwExY0rVBD7CYew6Si5eDhYqWWvmp56lzo",
+    image: "",
     linkedin: "https://www.linkedin.com/in/shambavi-jha-01892b2ab/?originalSubdomain=in"
   },
    {
     name: "TS Ajay",
     sig: "Executive Core",
     post: "Clutch SIG Head",
-    image: "https://media.licdn.com/dms/image/v2/D4E03AQFgC-PrZdesVw/profile-displayphoto-crop_800_800/B4EZjHfFk8HEAI-/0/1755693473556?e=1771459200&v=beta&t=nozq-wBLLGwExY0rVBD7CYew6Si5eDhYqWWvmp56lzo",
+    image: "",
     linkedin: "https://www.linkedin.com/in/ts-ajay-481119253/"
   },
 
@@ -168,14 +168,14 @@ export const auxCore: Member[] = [
     name: "Adhil Ali",
     sig: "Aux Core",
     post: "Event Affairs Secretary",
-    image: "https://media.licdn.com/dms/image/v2/D5603AQFj4UfoafNfvg/profile-displayphoto-crop_800_800/B56ZnXcYEYJYAI-/0/1760256166618?e=1771459200&v=beta&t=CAP4n366Utse5jf0jZpoFEWCQFOioAzdZSR0QtznBfA",
+    image: "",
     linkedin: "https://www.linkedin.com/in/adhil-ali-550164340/?originalSubdomain=in"
   },
   {
     name: "Amulya Kommidi",
     sig: "Aux Core",
     post: "Publicity Coordinator",
-    image: "https://media.licdn.com/dms/image/v2/D5603AQHRL5vM7bQYtw/profile-displayphoto-crop_800_800/B56ZpNQ3G5HkAI-/0/1762232860797?e=1771459200&v=beta&t=0ofi_dS8LuhQ_eQ422rvh_e7PMUUUQajsJ5DpO_cAOE",
+    image: "",
     linkedin: "https://www.linkedin.com/in/amulyakommidi/"
   },
   {
@@ -203,7 +203,7 @@ export const auxCore: Member[] = [
     name: "Hriday Jain",
     sig: "Aux Core",
     post: "Credit Sig Coordinator",
-    image: "https://media.licdn.com/dms/image/v2/D5603AQHajkhMcdD04w/profile-displayphoto-crop_800_800/B56Zg8KbnIG0AQ-/0/1753356026237?e=1771459200&v=beta&t=S0iuhEXmKeBzfpXPHzCn7cJXWopowFK5xg_50xK6MXE",
+    image: "",
     linkedin: "https://www.linkedin.com/in/hriday-jain-344940287/"
   },
   {
@@ -230,7 +230,7 @@ export const auxCore: Member[] = [
     name: "Gulzar",
     sig: "Aux Core",
     post: "Social Initiative Head",
-    image: "https://media.licdn.com/dms/image/v2/D5603AQGVnmAixpfocQ/profile-displayphoto-crop_800_800/B56ZgeYQu1G4AI-/0/1752856334095?e=1771459200&v=beta&t=_H5KkjAkqQPKQOmugY7oQENWwH7ADNnFaPYqQzio5zM",
+    image: "",
     linkedin: "https://www.linkedin.com/in/mgulzar70/"
   },
 ]

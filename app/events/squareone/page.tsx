@@ -155,9 +155,9 @@ export default function SquareOnePage() {
                  <div className="flex flex-col space-y-1">
                    {[
                      { num: 1, title: "The Briefing (Orientation)", sig: "All SIGs", status: "Completed", time: "Oct 12", active: false },
-                     { num: 2, title: "Clue Hunt: The Virtual Campus", sig: "Crypt & Chronicle", status: "Active", time: "Oct 15", active: true },
-                     { num: 3, title: "The Pitch (Presentation Round)", sig: "Clutch & Catalyst", status: "Upcoming", time: "Oct 20", active: false },
-                     { num: 4, title: "Code Relay", sig: "Charge & Concrete", status: "Locked", time: "Oct 22", active: false },
+                     { num: 2, title: "Clue Hunt: The Virtual Campus", sig: "Crypt & Chronicle", status: "Completed", time: "Oct 15", active: false },
+                     { num: 3, title: "The Pitch (Presentation Round)", sig: "Clutch & Catalyst", status: "Completed", time: "Oct 20", active: false },
+                     { num: 4, title: "Code Relay", sig: "Charge & Concrete", status: "Completed", time: "Oct 22", active: false },
                    ].map((item, idx) => (
                      <div key={idx} className="group grid grid-cols-[auto_1fr_1fr_auto] gap-4 px-4 py-3 rounded-md hover:bg-white/5 transition-colors items-center cursor-pointer">
                        <div className="w-8 text-center text-sm font-medium text-neutral-500 group-hover:hidden">

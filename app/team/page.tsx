@@ -1,120 +1,10 @@
 "use client";
 import { adminCore, auxCore, executiveCore } from "@/components/data"
-import SpecialCard from "@/components/FacAd";
-import MemberCard, { Member } from "@/components/MemberCard"
-import { useState } from "react"
-import { TeamMemberDetail, TeamMemberDetailCard } from "@/components/ui/team-member-detail-card";
+import { TeamMemberDetailCard } from "@/components/ui/team-member-detail-card";
 import Link from "next/link";
 import { HomeSectionLink } from "@/components/shared/HomeSectionLink";
 
-const coreMembers: TeamMemberDetail[] = [
-  {
-    name: "Aarav Kulkarni",
-    role: "Chairperson",
-    description:
-      "Leads chapter-wide strategy, drives cross-SIG collaboration, and ensures that every flagship initiative aligns with ISTE NITK's long-term vision and student impact goals.",
-    image:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop",
-    linkedin: "https://www.linkedin.com/",
-    email: "aarav.kulkarni@istenitk.in",
-  },
-  {
-    name: "Ishita Menon",
-    role: "General Secretary",
-    description:
-      "Coordinates chapter operations, documentation, and inter-team communication while maintaining execution quality across events, project milestones, and external collaborations.",
-    image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=800&auto=format&fit=crop",
-    linkedin: "https://www.linkedin.com/",
-    email: "ishita.menon@istenitk.in",
-  },
-  {
-    name: "Ritvik Rao",
-    role: "Technical Head",
-    description:
-      "Mentors technical teams on architecture decisions, development standards, and deployment workflows while enabling members to ship reliable products at scale.",
-    image:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop",
-    linkedin: "https://www.linkedin.com/",
-    email: "ritvik.rao@istenitk.in",
-  },
-  {
-    name: "Naina Deshpande",
-    role: "Design and Media Lead",
-    description:
-      "Shapes chapter identity through design systems, communication kits, and storytelling assets that keep event branding, outreach, and social media presence cohesive.",
-    image:
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=800&auto=format&fit=crop",
-    linkedin: "https://www.linkedin.com/",
-    email: "naina.deshpande@istenitk.in",
-  },
-];
 
-const auxiliaryMembers: TeamMemberDetail[] = [
-  {
-    name: "Pranav Shetty",
-    role: "Events Coordinator",
-    description:
-      "Plans and executes workshops, hackathons, and signature chapter experiences by coordinating logistics, partnerships, and high-quality participant engagement.",
-    image:
-      "https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=800&auto=format&fit=crop",
-    linkedin: "https://www.linkedin.com/",
-    email: "pranav.shetty@istenitk.in",
-  },
-  {
-    name: "Harini Bhat",
-    role: "Outreach Lead",
-    description:
-      "Builds strategic industry and campus partnerships, manages sponsorship communications, and expands chapter opportunities through targeted outreach campaigns.",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop",
-    linkedin: "https://www.linkedin.com/",
-    email: "harini.bhat@istenitk.in",
-  },
-  {
-    name: "Aditya Pai",
-    role: "Operations Manager",
-    description:
-      "Keeps chapter execution smooth by managing timelines, resource planning, and on-ground support for internal workflows and large-scale public events.",
-    image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=800&auto=format&fit=crop",
-    linkedin: "https://www.linkedin.com/",
-    email: "aditya.pai@istenitk.in",
-  },
-  {
-    name: "Saanvi Kapoor",
-    role: "Community Lead",
-    description:
-      "Strengthens member experience through onboarding, peer support systems, and community initiatives that help students learn, contribute, and grow consistently.",
-    image:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=800&auto=format&fit=crop",
-    linkedin: "https://www.linkedin.com/",
-    email: "saanvi.kapoor@istenitk.in",
-  },
-];
-
-const membersOnly = [
-  "Akshay B",
-  "Ananya S",
-  "Arjun K",
-  "Bhuvan M",
-  "Charith P",
-  "Devika R",
-  "Gokul N",
-  "Hrishikesh A",
-  "Ira J",
-  "Jeevan T",
-  "Keerthi V",
-  "Lakshya G",
-  "Megha P",
-  "Nikhil S",
-  "Prithvi R",
-  "Raghav H",
-  "Sakshi D",
-  "Tanmay N",
-  "Vaishnavi U",
-  "Yash M",
-];
 
 export default function TeamPage() {
   return (
@@ -129,15 +19,6 @@ export default function TeamPage() {
             Meet the people who build, lead, and scale ISTE NITK. From strategy to execution,
             this team powers every initiative across events, projects, and community impact.
           </p>
-          <div className="pt-2">
-            <HomeSectionLink
-              href="/#home"
-              className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm font-bold uppercase tracking-wide text-teal-300 transition-all duration-300 hover:border-teal-400/60 hover:bg-teal-400/10 hover:text-teal-200"
-            >
-              Return Back to Home
-              <span aria-hidden="true">↗</span>
-            </HomeSectionLink>
-          </div>
         </div>
       </section>
 
@@ -147,9 +28,23 @@ export default function TeamPage() {
             The <span className="text-teal-400">Core</span>
           </h2>
           <div className="mx-auto mb-12 mt-4 h-1 w-24 rounded-full bg-linear-to-r from-teal-400 to-transparent sm:mb-16" />
-          <div className="space-y-8">
-            {coreMembers.map((member, index) => (
-              <TeamMemberDetailCard key={member.name} member={member} reverse={index % 2 === 1} />
+          <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {adminCore.map((member) => (
+              <TeamMemberDetailCard key={member.name} member={member}/>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-20 border-t border-white/5 bg-transparent py-16 sm:py-24" id="events">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <h2 className="text-center text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
+            Executive <span className="text-teal-400">Core</span>
+          </h2>
+          <div className="mx-auto mb-12 mt-4 h-1 w-24 rounded-full bg-linear-to-r from-teal-400 to-transparent sm:mb-16" />
+          <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {executiveCore.map((member) => (
+              <TeamMemberDetailCard key={member.name} member={member} />
             ))}
           </div>
         </div>
@@ -161,32 +56,15 @@ export default function TeamPage() {
             Auxiliary <span className="text-teal-400">Core</span>
           </h2>
           <div className="mx-auto mb-12 mt-4 h-1 w-24 rounded-full bg-linear-to-r from-teal-400 to-transparent sm:mb-16" />
-          <div className="space-y-8">
-            {auxiliaryMembers.map((member, index) => (
-              <TeamMemberDetailCard key={member.name} member={member} reverse={index % 2 === 1} />
+          <div className="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {auxCore.map((member) => (
+              <TeamMemberDetailCard key={member.name} member={member} />
             ))}
           </div>
         </div>
       </section>
 
-      <section className="relative z-20 border-t border-white/5 bg-transparent py-16 sm:py-24" id="members">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <h2 className="text-center text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
-            Executive <span className="text-teal-400">Members</span>
-          </h2>
-          <div className="mx-auto mb-10 mt-4 h-1 w-24 rounded-full bg-linear-to-r from-teal-400 to-transparent sm:mb-14" />
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {membersOnly.map((member) => (
-              <div
-                key={member}
-                className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center text-sm font-semibold tracking-wide text-slate-200"
-              >
-                {member}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       <footer className="relative z-20 border-t border-white/14 bg-black/28 pb-10 pt-14 text-slate-400 shadow-[inset_0_1px_0_rgba(45,212,191,0.15)] sm:border-white/12 sm:bg-black/25 sm:pt-20" id="contact">
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px] bg-linear-to-r from-transparent via-teal-300/65 to-transparent" />

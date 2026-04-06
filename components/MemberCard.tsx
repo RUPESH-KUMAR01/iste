@@ -1,3 +1,4 @@
+import { StaticImport } from 'next/dist/shared/lib/get-img-props'
 import Image from 'next/image'
 import { FaLinkedin } from 'react-icons/fa'
 
@@ -5,7 +6,7 @@ export interface Member {
   name: string
   sig: string | null
   post: string | null
-  image: string | null
+  image: string | StaticImport
   linkedin: string
 }
 
@@ -17,7 +18,7 @@ const MemberCard = ({ name, sig, post, image, linkedin }: Member) => {
       {/* Fixed size image container */}
       <div className="w-[280px] h-[280px] relative shrink-0">
         <div className="w-full h-full overflow-hidden rounded-full">
-          <img
+          <Image
             src={image || "/trasparento.jpg"}
             alt="profile"
             className="w-full h-full object-cover"
