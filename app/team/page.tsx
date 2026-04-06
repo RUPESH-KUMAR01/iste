@@ -1,3 +1,8 @@
+"use client";
+import { adminCore, auxCore, executiveCore } from "@/components/data"
+import SpecialCard from "@/components/FacAd";
+import MemberCard, { Member } from "@/components/MemberCard"
+import { useState } from "react"
 import { TeamMemberDetail, TeamMemberDetailCard } from "@/components/ui/team-member-detail-card";
 import Link from "next/link";
 import { HomeSectionLink } from "@/components/shared/HomeSectionLink";

@@ -106,15 +106,14 @@ export default function Home() {
   };
 
   return (
-    <div className="w-full bg-transparent text-white">
-      
-      {/* RESTORED: PURE CSS GPU ACCELERATION FOR THE LOADER */}
-      <style dangerouslySetInnerHTML={{__html: `
-        .spin-clockwise { animation: custom-spin-cw 3s linear infinite; will-change: transform; transform: translateZ(0); }
-        .spin-counter { animation: custom-spin-ccw 15s linear infinite; will-change: transform; transform: translateZ(0); }
-        @keyframes custom-spin-cw { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes custom-spin-ccw { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
-      `}} />
+    <main className="min-h-screen">
+    
+      <section id="home" className="h-screen flex items-center justify-center flex-col gap-10">
+        <h1 className="relative z-10 px-4 text-center text-4xl leading-tight font-display font-bold text-white sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
+          Welcome to <span className="image-text">ISTE NITK</span>
+        </h1>
+        <h1 className="text-xl">Where <span className="text-[#d32c02]">creativity</span> meets <span className="text-[#d32c02]">technology</span></h1>
+      </section>
 
       {/* --- THE SPLIT-SCREEN BINARY IGNITION LOADER --- */}
       <AnimatePresence>

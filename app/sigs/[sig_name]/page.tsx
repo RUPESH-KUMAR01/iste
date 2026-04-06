@@ -1,38 +1,73 @@
-export default async function SigComingSoon({
+import Image from "next/image";
+import { notFound } from "next/navigation";
+import { ProjectGrid } from "@/components/projects/ProjectGrid";
+import { getProjectsForSig, getSingleSig } from "@/lib/cms";
+import { getSigTemplateStyle } from "@/lib/project-templates";
+import { cn } from "@/lib/utils";
+
+export default async function SigPage({
   params,
 }: {
-  params: Promise<{ sig_name: string }>
+  params: Promise<{ sig_name: string }>;
 }) {
   const { sig_name } = await params;
-  const formattedSigName = sig_name
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+  const sig = await getSingleSig(sig_name);
+
+  if (!sig) {
+    notFound();
+  }
+
+  const sigProjects = await getProjectsForSig(sig.slug);
+  const style = getSigTemplateStyle(sig.projectTemplate, sig.slug);
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-6">
-      <div className="max-w-2xl mx-auto text-center">
-        <div className="mb-8">
-          <h1 className="text-6xl md:text-7xl font-display font-bold text-white mb-4">
-            Coming <span className="text-primary">Soon</span>
-          </h1>
-          <div className="w-32 h-1 bg-secondary mx-auto rounded-full mb-6" />
+    <main className="min-h-screen px-6 pt-30 pb-16">
+      <section className="mx-auto max-w-6xl">
+        <div
+          className={cn(
+            "rounded-3xl border bg-card/90 p-8 md:p-10",
+            style.cardBorder
+          )}
+        >
+          <div className="grid gap-8 md:grid-cols-[220px_1fr] md:items-center">
+            <div className="relative mx-auto h-44 w-44 md:h-52 md:w-52">
+              <Image
+                src={sig.image}
+                alt={sig.title}
+                fill
+                className="rounded-2xl object-cover"
+              />
+            </div>
+            <div>
+              <p
+                className={cn(
+                  "mb-2 inline-flex rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide",
+                  style.sigChip
+                )}
+              >
+                Special Interest Group
+              </p>
+              <h1 className="text-4xl font-bold font-display text-white md:text-5xl">
+                {sig.title}
+              </h1>
+              <p className="mt-4 max-w-2xl text-muted">{sig.description}</p>
+            </div>
+          </div>
         </div>
-        
-        <p className="text-2xl md:text-3xl font-display font-semibold text-white mb-4">
-          {formattedSigName}
-        </p>
-        
-        <p className="text-lg text-muted mb-8 max-w-md mx-auto">
-          We're working hard to bring you something amazing. Stay tuned for updates!
-        </p>
+      </section>
 
-        <div className="flex items-center justify-center gap-2 text-muted">
-          <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-          <span className="text-sm">In Development</span>
-          <div className="w-2 h-2 bg-primary rounded-full animate-pulse [animation-delay:0.5s]" />
+      <section className="mx-auto mt-14 max-w-6xl">
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-2xl font-bold font-display text-white md:text-3xl">
+            Projects
+          </h2>
+          <span className="text-sm text-muted">
+            {sigProjects.length} published
+          </span>
         </div>
-      </div>
+
+        <ProjectGrid projects={sigProjects} sigTitle={sig.title} style={style} />
+      </section>
     </main>
   );
 }

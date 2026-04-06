@@ -239,48 +239,64 @@ export const auxCore: Member[] = [
 export const sigs = [
     {
       title: "Catalyst",
+      slug: "catalyst",
+      projectTemplate: "catalyst",
       image: "/catalyst.jpg",
       description: "Accelerating innovation and driving breakthrough ideas in technology and research.",
       link: "/sigs/catalyst"
     },
     {
       title: "Charge",
+      slug: "charge",
+      projectTemplate: "charge",
       image: "/charge.jpg",
       description: "Powering the future with sustainable energy solutions and green technology.",
       link: "/sigs/charge"
     },
     {
       title: "Chronicle",
+      slug: "chronicle",
+      projectTemplate: "chronicle",
       image: "/chronicle.jpg",
       description: "Documenting stories and preserving knowledge through digital media and content creation.",
       link: "/sigs/chronicle"
     },
     {
       title: "Clutch",
+      slug: "clutch",
+      projectTemplate: "clutch",
       image: "/clutch.jpg",
       description: "Delivering under pressure with competitive programming and problem-solving excellence.",
       link: "/sigs/clutch"
     },
     {
       title: "Concrete",
+      slug: "concrete",
+      projectTemplate: "concrete",
       image: "/concrete.jpg",
       description: "Building strong foundations in software development and engineering practices.",
       link: "/sigs/concrete"
     },
     {
       title: "Create",
+      slug: "create",
+      projectTemplate: "create",
       image: "/create.jpg",
       description: "Unleashing creativity through design, art, and innovative digital experiences.",
       link: "/sigs/create"
     },
     {
       title: "Credit",
+      slug: "credit",
+      projectTemplate: "credit",
       image: "/credit.jpg",
       description: "Exploring finance, blockchain, and the future of digital transactions.",
       link: "/sigs/credit"
     },
     {
       title: "Crypt",
+      slug: "crypt",
+      projectTemplate: "crypt",
       image: "/crypt.jpg",
       description: "Mastering cybersecurity, cryptography, and protecting digital infrastructure.",
       link: "/sigs/crypt"
