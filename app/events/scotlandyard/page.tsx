@@ -1,13 +1,19 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 
-const GOLD = "#C8860A";
-const SAND = "#E8C87A";
-const RUST = "#8B2500";
-const INK = "#0D0800";
+/* ─────────────────────────────────────────────
+   COLOUR PALETTE
+───────────────────────────────────────────── */
+const GOLD  = "#C8860A";
+const SAND  = "#E8C87A";
+const RUST  = "#8B2500";
+const INK   = "#0D0800";
 const PAPYRUS = "#1C1000";
 const STONE = "#1E160A";
 
+/* ─────────────────────────────────────────────
+   DATA
+───────────────────────────────────────────── */
 const STATS = [
   { icon: "📅", label: "Date",        value: "21 September 2026" },
   { icon: "📍", label: "Venue",       value: "LHC A" },
@@ -16,10 +22,10 @@ const STATS = [
 ];
 
 const PILLARS = [
-  { icon: "🔍", name: "Decode",    sub: "Decipher hidden clues",        accent: GOLD },
-  { icon: "🗺️", name: "Navigate",  sub: "Traverse the campus trails",   accent: RUST },
-  { icon: "⚖️", name: "Weigh",     sub: "Face the judgement of Osiris", accent: "#6B4C00" },
-  { icon: "👁️", name: "Survive",   sub: "Escape before doom falls",     accent: "#5A1A00" },
+  { icon: "🔍", name: "Decode",   sub: "Decipher hidden clues",        accent: GOLD },
+  { icon: "🗺️", name: "Navigate", sub: "Traverse the campus trails",   accent: RUST },
+  { icon: "⚖️", name: "Weigh",    sub: "Face the judgement of Osiris", accent: "#6B4C00" },
+  { icon: "👁️", name: "Survive",  sub: "Escape before doom falls",     accent: "#5A1A00" },
 ];
 
 const ROUNDS = [
@@ -30,12 +36,192 @@ const ROUNDS = [
   { name: "Osiris Judges",      sub: "The last team standing claims glory",             color: "#3B2200", tc: SAND   },
 ];
 
+const NAV_LINKS = [
+  { name: "Home",    href: "#home" },
+  { name: "About",   href: "#about" },
+  { name: "Details", href: "#details" },
+  { name: "Trials",  href: "#trials" },
+  { name: "Register",href: "#register" },
+];
+
+/* ─────────────────────────────────────────────
+   GLOBAL CSS
+───────────────────────────────────────────── */
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 .font-cinzel  { font-family: 'Cinzel', serif; }
 .font-crimson { font-family: 'Crimson Pro', serif; }
 
+/* ── Navbar ── */
+.egypt-nav {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95%;
+  max-width: 1100px;
+  z-index: 100;
+  border-radius: 999px;
+  border: 1px solid rgba(200,134,10,0.35);
+  background: rgba(13,8,0,0.72);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  box-shadow:
+    0 8px 40px rgba(0,0,0,0.55),
+    inset 0 1px 0 rgba(200,134,10,0.18),
+    0 0 0 1px rgba(200,134,10,0.06);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.egypt-nav.scrolled {
+  background: rgba(13,8,0,0.92);
+  box-shadow:
+    0 12px 48px rgba(0,0,0,0.7),
+    inset 0 1px 0 rgba(200,134,10,0.22),
+    0 0 0 1px rgba(200,134,10,0.1);
+}
+.egypt-nav.nav-hidden {
+  transform: translateX(-50%) translateY(-120%);
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), background 0.3s;
+}
+.egypt-nav.nav-visible {
+  transform: translateX(-50%) translateY(0);
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), background 0.3s;
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  height: 62px;
+}
+.nav-brand {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 5px;
+  color: ${GOLD};
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.nav-brand-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: ${GOLD};
+  animation: flicker 3s ease-in-out infinite;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+}
+.nav-links a {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: rgba(232,200,122,0.65);
+  text-decoration: none;
+  transition: color 0.2s;
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0; right: 0;
+  height: 1px;
+  background: ${GOLD};
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.25s ease;
+}
+.nav-links a:hover { color: ${GOLD}; }
+.nav-links a:hover::after { transform: scaleX(1); }
+.nav-cta {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: ${INK};
+  background: ${GOLD};
+  border: none;
+  padding: 9px 24px;
+  border-radius: 999px;
+  cursor: pointer;
+  border-bottom: 3px solid #7A5000;
+  transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+  font-weight: 700;
+}
+.nav-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(200,134,10,0.4); filter: brightness(1.08); }
+.nav-cta:active { transform: translateY(1px); border-bottom-width: 1px; }
+
+/* Mobile hamburger */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+  background: none;
+  border: none;
+}
+.nav-hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: ${GOLD};
+  border-radius: 2px;
+  transition: transform 0.25s, opacity 0.25s;
+}
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile menu */
+.nav-mobile {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s;
+  opacity: 0;
+  border-radius: 0 0 24px 24px;
+}
+.nav-mobile.open {
+  max-height: 400px;
+  opacity: 1;
+}
+.nav-mobile-inner {
+  padding: 8px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.nav-mobile-inner a {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(232,200,122,0.7);
+  text-decoration: none;
+  padding: 12px 16px;
+  border-radius: 12px;
+  transition: background 0.2s, color 0.2s;
+  display: block;
+}
+.nav-mobile-inner a:hover { background: rgba(200,134,10,0.12); color: ${GOLD}; }
+.nav-mobile-inner .nav-cta-mobile {
+  margin-top: 8px;
+  text-align: center;
+  background: ${GOLD};
+  color: ${INK};
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+/* ── Animations ── */
 @keyframes flicker {
   0%,100% { opacity:1; transform:scale(1); }
   45%     { opacity:0.4; transform:scale(1.5); }
@@ -62,7 +248,12 @@ const CSS = `
   33%     { opacity:0.7; transform:scaleY(1.12) scaleX(0.88); }
   66%     { opacity:1; transform:scaleY(0.94) scaleX(1.06); }
 }
+@keyframes navFadeIn {
+  from { opacity:0; transform:translateX(-50%) translateY(-24px); }
+  to   { opacity:1; transform:translateX(-50%) translateY(0); }
+}
 
+.egypt-nav { animation: navFadeIn 0.7s cubic-bezier(0.22,1,0.36,1) 0.2s both; }
 .anim-flicker   { animation: flicker 3s ease-in-out infinite; }
 .anim-drift     { animation: drift 5s ease-in-out infinite; }
 .anim-driftSlow { animation: driftSlow 7s ease-in-out infinite; }
@@ -89,7 +280,6 @@ const CSS = `
   -webkit-background-clip:text; -webkit-text-fill-color:transparent;
   background-clip:text; animation:shimmer 4s linear infinite;
 }
-
 .hiero-strip {
   display:flex; overflow:hidden; height:26px; width:100%;
   border-top:1.5px solid rgba(200,134,10,0.35);
@@ -103,7 +293,6 @@ const CSS = `
   display:flex; align-items:center; justify-content:center;
   font-size:11px; color:rgba(200,134,10,0.5);
 }
-
 .card-egypt {
   position:relative; overflow:hidden;
   transition:transform 0.28s ease,background 0.2s,box-shadow 0.28s;
@@ -153,17 +342,23 @@ const CSS = `
 }
 @media(max-width:960px){
   .hero-deco,.pyramid-section-deco { display:none !important; }
-  .hero-inner { padding:80px 24px 120px !important; }
+  .hero-inner { padding:100px 24px 120px !important; }
   .stats-grid { grid-template-columns:1fr 1fr !important; }
   .section-pad { padding:72px 24px !important; }
   .timeline-flex { flex-direction:column !important; border-radius:14px !important; }
   .t-node { border-right:none !important; border-bottom:1px solid rgba(200,134,10,0.1) !important; }
   .footer-inner { padding:24px !important; flex-direction:column; gap:20px; text-align:center; }
 }
+@media(max-width:768px){
+  .nav-links, .nav-cta { display:none !important; }
+  .nav-hamburger { display:flex !important; }
+  .egypt-nav { border-radius: 20px; top: 12px; }
+}
 `;
 
-/* ───── SVG COMPONENTS ───── */
-
+/* ─────────────────────────────────────────────
+   SVG COMPONENTS (unchanged)
+───────────────────────────────────────────── */
 function Pyramid({ width=320, opacity=0.45, gold=false }:{ width?:number; opacity?:number; gold?:boolean }) {
   const h = width * 0.78;
   const gid = gold ? "pgold" : "pstone";
@@ -379,17 +574,142 @@ function TorchPair({ height=110 }:{ height?:number }) {
   );
 }
 
-/* ───── PAGE ───── */
+/* ─────────────────────────────────────────────
+   NAVBAR COMPONENT
+───────────────────────────────────────────── */
+function EgyptNavbar() {
+  const [scrolled, setScrolled]     = useState(false);
+  const [menuOpen, setMenuOpen]     = useState(false);
+  const [navHidden, setNavHidden]   = useState(false);
+  const lastY = useRef(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 40);
+      // Hide on scroll down past 120px, show on scroll up
+      if (y > 120) {
+        setNavHidden(y > lastY.current);
+      } else {
+        setNavHidden(false);
+      }
+      lastY.current = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Close menu on resize to desktop
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 769px)");
+    const handler = (e: MediaQueryListEvent) => { if (e.matches) setMenuOpen(false); };
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      setMenuOpen(false);
+      const el = document.querySelector(href);
+      if (el) {
+        const top = Math.max(el.getBoundingClientRect().top + window.scrollY - 90, 0);
+        window.scrollTo({ top, behavior: "smooth" });
+      }
+    }
+  };
+
+  const navClasses = [
+    "egypt-nav",
+    scrolled ? "scrolled" : "",
+    navHidden ? "nav-hidden" : "nav-visible",
+  ].filter(Boolean).join(" ");
+
+  return (
+    <nav className={navClasses} role="navigation" aria-label="Main navigation">
+      <div className="nav-inner">
+        {/* Brand */}
+        <a href="#home" className="nav-brand" onClick={(e) => handleNavClick(e, "#home")}>
+          <span className="nav-brand-dot"/>
+          <span className="font-cinzel" style={{fontSize:13,letterSpacing:5,color:GOLD}}>ISTE NITK</span>
+          <span style={{
+            width:1,height:16,background:"rgba(200,134,10,0.3)",margin:"0 4px",display:"inline-block",verticalAlign:"middle"
+          }}/>
+          <span className="font-cinzel" style={{fontSize:10,letterSpacing:3,color:"rgba(232,200,122,0.5)"}}>
+            Scotland Yard
+          </span>
+        </a>
+
+        {/* Desktop links */}
+        <ul className="nav-links" style={{display:"flex"}}>
+          {NAV_LINKS.map(link => (
+            <li key={link.name}>
+              <a href={link.href} onClick={(e) => handleNavClick(e, link.href)}>
+                {link.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        {/* Desktop CTA */}
+        <button className="nav-cta" onClick={() => {
+          const el = document.querySelector("#register");
+          if (el) { const top = Math.max(el.getBoundingClientRect().top + window.scrollY - 90, 0); window.scrollTo({ top, behavior:"smooth" }); }
+        }}>
+          Register
+        </button>
+
+        {/* Hamburger */}
+        <button
+          className={`nav-hamburger${menuOpen ? " open" : ""}`}
+          aria-label="Toggle menu"
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen(v => !v)}
+        >
+          <span/><span/><span/>
+        </button>
+      </div>
+
+      {/* Mobile menu */}
+      <div className={`nav-mobile${menuOpen ? " open" : ""}`}>
+        <div className="nav-mobile-inner">
+          {NAV_LINKS.map(link => (
+            <a key={link.name} href={link.href} onClick={(e) => handleNavClick(e, link.href)}>
+              {link.name}
+            </a>
+          ))}
+          <a href="#register" className="nav-cta-mobile font-cinzel"
+            style={{fontFamily:"'Cinzel',serif",fontSize:10,letterSpacing:3,color:INK,fontWeight:700,textDecoration:"none"}}
+            onClick={(e) => handleNavClick(e, "#register")}>
+            Register Now
+          </a>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   MAIN PAGE
+───────────────────────────────────────────── */
 export default function ScotlandYardPage() {
   return (
     <div>
       <style>{CSS}</style>
       <div className="font-crimson overflow-x-hidden antialiased" style={{background:INK,color:"#fff"}}>
 
-        {/* ── HERO ── */}
+        {/* ══ NAVBAR ══ */}
+        <EgyptNavbar />
+
+        {/* ══ HERO ══ */}
         <section
+          id="home"
           className="hero-inner relative flex items-center justify-center overflow-hidden"
-          style={{minHeight:"95vh",padding:"100px 80px",background:`linear-gradient(130deg,${INK} 0%,${PAPYRUS} 100%)`}}
+          style={{
+            minHeight:"100vh",
+            padding:"120px 80px 100px",          /* extra top padding for navbar */
+            background:`linear-gradient(130deg,${INK} 0%,${PAPYRUS} 100%)`
+          }}
         >
           <div className="papyrus-bg"/>
           <div className="ankh-glow" style={{width:600,height:600,left:-200,top:"40%",transform:"translateY(-50%)"}}/>
@@ -460,7 +780,10 @@ export default function ScotlandYardPage() {
               The sands of time have spoken. Your wit will be tested. Your conscience weighed.
               Your every step, closer to salvation — or doom.
             </p>
-            <button className="btn-egypt">Register Now</button>
+            <button className="btn-egypt" onClick={() => {
+              const el = document.querySelector("#register");
+              if (el) { const top = Math.max(el.getBoundingClientRect().top + window.scrollY - 90, 0); window.scrollTo({ top, behavior:"smooth" }); }
+            }}>Register Now</button>
           </div>
         </section>
 
@@ -468,8 +791,8 @@ export default function ScotlandYardPage() {
         <div style={{marginTop:-2,background:STONE}}><SandDunes opacity={0.35}/></div>
         <HieroStrip color={STONE} glyphs={["𓂀","𓆣","𓅓","𓁹","𓊪","𓂋"]}/>
 
-        {/* ── ABOUT ── */}
-        <section className="section-pad" style={{padding:"96px 80px",background:PAPYRUS,position:"relative",overflow:"hidden"}}>
+        {/* ══ ABOUT ══ */}
+        <section id="about" className="section-pad" style={{padding:"96px 80px",background:PAPYRUS,position:"relative",overflow:"hidden"}}>
           <div style={{position:"absolute",right:40,bottom:0,pointerEvents:"none"}} className="pyramid-section-deco">
             <Mummy width={120} opacity={0.45}/>
           </div>
@@ -501,8 +824,8 @@ export default function ScotlandYardPage() {
 
         <HieroStrip color={INK} glyphs={["𓊪","𓂋","𓅱","𓇯","𓈖","𓊹"]}/>
 
-        {/* ── EVENT INFO ── */}
-        <section className="section-pad" style={{padding:"96px 80px",position:"relative",overflow:"hidden"}}>
+        {/* ══ EVENT INFO ══ */}
+        <section id="details" className="section-pad" style={{padding:"96px 80px",position:"relative",overflow:"hidden"}}>
           <div style={{position:"absolute",right:-20,bottom:0,pointerEvents:"none"}} className="pyramid-section-deco">
             <Pyramid width={340} opacity={0.3}/>
           </div>
@@ -534,10 +857,11 @@ export default function ScotlandYardPage() {
             ))}
           </div>
         </section>
+
         <HieroStrip color={STONE} glyphs={["𓁹","𓊹","𓂀","𓆣","𓅓","𓊪"]}/>
 
-        {/* ── TIMELINE ── */}
-        <section className="section-pad" style={{padding:"96px 80px",background:PAPYRUS,position:"relative",overflow:"hidden"}}>
+        {/* ══ TIMELINE ══ */}
+        <section id="trials" className="section-pad" style={{padding:"96px 80px",background:PAPYRUS,position:"relative",overflow:"hidden"}}>
           <div style={{position:"absolute",right:60,top:20,pointerEvents:"none",display:"flex",gap:16,alignItems:"flex-start"}} className="pyramid-section-deco">
             <Obelisk height={140} opacity={0.38}/>
             <Obelisk height={175} opacity={0.42}/>
@@ -578,8 +902,8 @@ export default function ScotlandYardPage() {
         </div>
         <HieroStrip color={GOLD} glyphs={["𓂋","𓅱","𓇯","𓈖","𓊹","𓁹"]}/>
 
-        {/* ── CTA ── */}
-        <section className="cta-bg text-center relative overflow-hidden"
+        {/* ══ CTA / REGISTER ══ */}
+        <section id="register" className="cta-bg text-center relative overflow-hidden"
           style={{padding:"130px 20px",background:`linear-gradient(130deg,${PAPYRUS} 0%,${INK} 100%)`}}>
           <div style={{position:"absolute",bottom:0,left:"50%",transform:"translateX(-50%)",pointerEvents:"none",opacity:0.18}}>
             <Pyramid width={600} gold/>
@@ -617,7 +941,7 @@ export default function ScotlandYardPage() {
           </div>
         </section>
 
-        {/* ── FOOTER ── */}
+        {/* ══ FOOTER ══ */}
         <footer className="footer-inner flex items-center justify-between"
           style={{background:"#04030A",padding:"28px 80px",minHeight:80,borderTop:`2px solid rgba(200,134,10,0.2)`}}>
           <div>
@@ -629,8 +953,11 @@ export default function ScotlandYardPage() {
           <div className="flex" style={{gap:28}}>
             {["Home","Events","Instagram","Contact"].map(l=>(
               <a key={l} href="#"
-                className="no-underline font-cinzel transition-colors duration-200 hover:text-[#C8860A]"
-                style={{fontSize:10,letterSpacing:3,textTransform:"uppercase",color:"rgba(255,255,255,0.55)"}}>
+                className="no-underline font-cinzel transition-colors duration-200"
+                style={{fontSize:10,letterSpacing:3,textTransform:"uppercase",color:"rgba(255,255,255,0.55)",textDecoration:"none"}}
+                onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.color = GOLD}
+                onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.55)"}
+              >
                 {l}
               </a>
             ))}
