@@ -932,7 +932,6 @@ export default function ScotlandYardPage() {
             <button className="btn-egypt">Register Now</button>
           </div>
         </section>
-        <HieroStrip color={GOLD} glyphs={["𓂋","𓅱","𓇯","𓈖","𓊹","𓁹"]}/>
 
         {/* ══ FOOTER ══ */}
         <footer className="footer-inner flex items-center justify-between"
