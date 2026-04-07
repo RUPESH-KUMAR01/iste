@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
+import Image from "next/image";
 
 /* ─────────────────────────────────────────────
    COLOUR PALETTE
@@ -631,11 +632,20 @@ function EgyptNavbar() {
         {/* Brand */}
         <a href="#home" className="nav-brand" onClick={(e) => handleNavClick(e, "#home")}>
           <span className="nav-brand-dot"/>
-          <span className="font-cinzel" style={{fontSize:13,letterSpacing:5,color:GOLD}}>ISTE NITK</span>
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Image
+              src="/images/iste_transparent.png"
+              alt="ISTE Logo"
+              width={48}
+              height={48}
+              style={{ width: "auto" }}
+              className="h-10 sm:h-12 w-auto object-contain hover:scale-105 transition-transform duration-300"
+            />
+          </div>
           <span style={{
             width:1,height:16,background:"rgba(200,134,10,0.3)",margin:"0 4px",display:"inline-block",verticalAlign:"middle"
           }}/>
-          <span className="font-cinzel" style={{fontSize:10,letterSpacing:3,color:"rgba(232,200,122,0.5)"}}>
+          <span className="font-cinzel" style={{fontSize:13,letterSpacing:3,color:"rgba(232,200,122,0.5)"}}>
             Scotland Yard
           </span>
         </a>
