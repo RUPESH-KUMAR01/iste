@@ -15,15 +15,60 @@ interface Track {
   startAngle?: number
 }
 
-interface OrbitalEvent {
-  id: number
-  title: string
-  image: string
-  radius: number
-  speed: number
-  color: string       // accent color rgba base e.g. "0, 229, 255"
-  tracks: Track[]
-}
+export const SolarSystem = () => {
+  const router = useRouter()
+  const [hoveredPlanet, setHoveredPlanet] = useState<number | null>(null)
+  const [selectedPlanet, setSelectedPlanet] = useState<number | null>(null)
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 })
+
+  const planets: Planet[] = [
+    {
+      id: 0,
+      title: Events[0].title,
+      description: Events[0].description,
+      radius: 200,
+      speed: 20,
+      image: Events[0].image || '/scotland_yard.jpeg',
+      link: Events[0].link || '/events/scotlandyard'
+    },
+    {
+      id: 1,
+      title: Events[1].title,
+      description: Events[1].description,
+      radius: 360,
+      speed: 28,
+      image: Events[1].image || '/square_one.jpeg',
+      link: Events[1].link || '/events/squareone'
+    },
+    {
+      id: 2,
+      title: Events[2].title,
+      description: Events[2].description,
+      radius: 520,
+      speed: 36,
+      image: Events[2].image || '/transcend.png',
+      link: Events[2].link || '/events/transcend'
+    },
+  ]
+
+  const handlePlanetDoubleClick = (link: string) => {
+    // REDIRECTION PLACEHOLDER: logic to handle external URLs (starting with http) vs internal repository paths
+    if (link.startsWith('http')) {
+      window.open(link, '_blank', 'noopener,noreferrer')
+    } else {
+      router.push(link)
+    }
+  }
+
+  const handlePlanetHover = (planetId: number, e: React.MouseEvent) => {
+    if (hoverTimeoutRef.current) {
+      window.clearTimeout(hoverTimeoutRef.current)
+      hoverTimeoutRef.current = null
+    }
+    setHoveredPlanet(planetId)
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+    setTooltipPos({ x: rect.right + 12, y: rect.top + rect.height / 2 })
+  }
 
 const orbitalData: OrbitalEvent[] = [
   {
@@ -176,17 +221,20 @@ export const SolarSystem = () => {
       padding: 5rem 0;
     }
 
-    /* ── Info Card (right panel) ── */
-    .ss-info-panel {
-      position: absolute;
-      left: calc(100% + 20px);
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 100;
-      width: 260px;
-      pointer-events: none;
-      animation: float-in 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-    }
+  return (
+    <div className="w-full min-h-screen flex items-center justify-center relative bg-transperant overflow-hidden py-16">
+      {/* Events Header */}
+      <div className="absolute top-24 left-1/2 transform -translate-x-1/2 z-40 text-center">
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white drop-shadow-[0_0_15px_rgba(0,229,255,0.4)]">
+          Events
+        </h1>
+        <div className="w-24 h-1 bg-linear-to-r from-teal-400 to-transparent rounded-full mx-auto mt-4" />
+      </div>
+      <style>{`
+        @keyframes orbit-0 {
+  from { transform: rotate(0deg) translateX(200px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(200px) rotate(-360deg); }
+}
 
     .ss-info-card {
       background: rgba(8, 10, 20, 0.88);
