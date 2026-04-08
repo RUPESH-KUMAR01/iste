@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Position, GlobeConfig } from "@/components/ui/globe";
 import { SigCard } from "@/components/ui/sig-card"; 
+import Companies from "@/components/Companies";
 // import { TeamStrip } from "@/components/ui/team-strip"; 
 import { consumeSkipNextHomeLoader } from "@/lib/home-loader-skip";
 import SolarSystem from "@/components/SolarSystem";
