@@ -1,21 +1,21 @@
 "use client"
 
-import React, { useState, useRef, useMemo } from 'react'
+import React, { useState, useRef } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { Events } from './data'
 
-// ─── Data Structure ─────────────────────────────────────────────────────────
-
-interface Track {
-  id: string
+interface Planet {
+  id: number
   title: string
-  image: string
+  description: string
   radius: number
   speed: number
-  startAngle?: number
+  image: string
+  link: string
 }
 
-export const SolarSystem = () => {
+const SolarSystem = () => {
   const router = useRouter()
   const [hoveredPlanet, setHoveredPlanet] = useState<number | null>(null)
   const [selectedPlanet, setSelectedPlanet] = useState<number | null>(null)
@@ -29,7 +29,7 @@ export const SolarSystem = () => {
       radius: 200,
       speed: 20,
       image: Events[0].image || '/scotland_yard.jpeg',
-      link: Events[0].link || '/events/scotlandyard'
+      link: Events[0].link || '/events/scotland-yard'
     },
     {
       id: 1,
@@ -38,7 +38,7 @@ export const SolarSystem = () => {
       radius: 360,
       speed: 28,
       image: Events[1].image || '/square_one.jpeg',
-      link: Events[1].link || '/events/squareone'
+      link: Events[1].link || '/events/square-one'
     },
     {
       id: 2,
@@ -70,165 +70,22 @@ export const SolarSystem = () => {
     setTooltipPos({ x: rect.right + 12, y: rect.top + rect.height / 2 })
   }
 
-const orbitalData: OrbitalEvent[] = [
-  {
-    id: 0,
-    title: "Scotland Yard",
-    image: "/scotland_yard.jpeg",
-    radius: 300,
-    speed: 50,
-    color: "0, 229, 255",
-    tracks: [
-      { id: '0a', title: "Chronicle", image: "/sig-logos/chronicle.png", radius: 110, speed: 18, startAngle: 0 },
-    ]
-  },
-  {
-    id: 1,
-    title: "SquareOne",
-    image: "/square_one.jpeg",
-    radius: 300,
-    speed: 50,
-    color: "255, 159, 28",
-    tracks: [
-      { id: '1a', title: "Create", image: "/sig-logos/create.png", radius: 108, speed: 18, startAngle: 0 },
-      { id: '1b', title: "Credit", image: "/sig-logos/credit.png", radius: 108, speed: 18, startAngle: 72 },
-      { id: '1c', title: "Crypt", image: "/sig-logos/crypt.png", radius: 108, speed: 18, startAngle: 144 },
-      { id: '1d', title: "Catalyst", image: "/sig-logos/catalyst.png", radius: 108, speed: 18, startAngle: 216 },
-      { id: '1e', title: "Charge", image: "/sig-logos/charge.png", radius: 108, speed: 18, startAngle: 288 },
-    ]
-  },
-  {
-    id: 2,
-    title: "Transcend",
-    image: "/transcend.png",
-    radius: 300,
-    speed: 50,
-    color: "217, 70, 239",
-    tracks: [
-      { id: '2a', title: "Chronicle", image: "/sig-logos/chronicle.png", radius: 108, speed: 18, startAngle: 0 },
-      { id: '2b', title: "Clutch", image: "/sig-logos/clutch.png", radius: 108, speed: 18, startAngle: 72 },
-      { id: '2c', title: "Concrete", image: "/sig-logos/concrete.png", radius: 108, speed: 18, startAngle: 144 },
-      { id: '2d', title: "Create", image: "/sig-logos/create.png", radius: 108, speed: 18, startAngle: 216 },
-      { id: '2e', title: "Crypt", image: "/sig-logos/crypt.png", radius: 108, speed: 18, startAngle: 288 },
-    ]
+  const handleMouseMove = (e: React.MouseEvent) => {
   }
-]
 
-// ─── Component ──────────────────────────────────────────────────────────────
+  const handlePlanetClick = (planetId: number) => {
+    setSelectedPlanet((prev) => (prev === planetId ? null : planetId))
+  }
 
-export const SolarSystem = () => {
-  const [hoveredId, setHoveredId] = useState<string | null>(null)
-  const [isPaused, setIsPaused] = useState(false)
-  const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  // Pre-compute starting angles for the 3 suns so they're evenly spaced
-  const sunStartAngles = [0, 120, 240]
-
-  // ─── Generate all CSS keyframes dynamically ─────────────────────────────
-  const generatedStyles = useMemo(() => {
-    let css = ''
-
-    // --- Primary orbit keyframes (suns around center) ---
-    orbitalData.forEach((sun, i) => {
-      const startDeg = sunStartAngles[i]
-      const endDeg = startDeg + 360
-
-      // Outer wrapper: handles the orbital rotation
-      css += `
-        @keyframes sun-orbit-${sun.id} {
-          from { transform: rotate(${startDeg}deg) translateX(${sun.radius}px); }
-          to   { transform: rotate(${endDeg}deg)   translateX(${sun.radius}px); }
-        }
-      `
-
-      // Inner wrapper: counter-rotates to keep logo upright
-      css += `
-        @keyframes sun-counter-${sun.id} {
-          from { transform: rotate(-${startDeg}deg); }
-          to   { transform: rotate(-${endDeg}deg);   }
-        }
-      `
-
-      // --- Secondary orbit keyframes (tracks/planets around their parent sun) ---
-      sun.tracks.forEach((track) => {
-        const tStart = track.startAngle ?? 0
-        const tEnd = tStart + 360
-
-        // Orbital rotation around the sun
-        css += `
-          @keyframes track-orbit-${track.id} {
-            from { transform: rotate(${tStart}deg) translateX(${track.radius}px); }
-            to   { transform: rotate(${tEnd}deg)   translateX(${track.radius}px); }
-          }
-        `
-
-        // Counter-rotation: must cancel BOTH the sun's rotation AND the track's own rotation
-        // The sun rotates from startDeg to endDeg over sun.speed seconds
-        // The track rotates from tStart to tEnd over track.speed seconds
-        // We counter-rotate by -(sunAngle + trackAngle) so the logo stays upright.
-        // Since these run on separate timers, we handle the track counter-rotation 
-        // relative to itself, and let the sun's counter-rotation layer handle the sun part.
-        css += `
-          @keyframes track-counter-${track.id} {
-            from { transform: rotate(-${tStart}deg); }
-            to   { transform: rotate(-${tEnd}deg);   }
-          }
-        `
-      })
-    })
-
-    // --- Ambient animations ---
-    css += `
-      @keyframes pulse-glow {
-        0%, 100% { box-shadow: 0 0 30px rgba(0, 229, 255, 0.4), 0 0 60px rgba(0, 229, 255, 0.15); }
-        50%      { box-shadow: 0 0 60px rgba(0, 229, 255, 0.7), 0 0 120px rgba(0, 229, 255, 0.3);  }
-      }
-
-      @keyframes center-glow {
-        0%, 100% { box-shadow: 0 0 60px rgba(0, 229, 255, 0.5), 0 0 120px rgba(0, 229, 255, 0.2), inset 0 0 40px rgba(0, 229, 255, 0.3); }
-        50%      { box-shadow: 0 0 100px rgba(0, 229, 255, 0.8), 0 0 200px rgba(0, 229, 255, 0.4), inset 0 0 50px rgba(0, 229, 255, 0.4); }
-      }
-
-      @keyframes float-in {
-        from { opacity: 0; transform: scale(0.7); }
-        to   { opacity: 1; transform: scale(1);   }
-      }
-
-      @keyframes twinkle {
-        0%, 100% { opacity: 0.3; }
-        50%      { opacity: 1;   }
-      }
-
-      @keyframes ring-pulse {
-        0%, 100% { opacity: 0.15; }
-        50%      { opacity: 0.35; }
-      }
-    `
-
-    return css
-  }, [])
-
-  // ─── Static styles ──────────────────────────────────────────────────────
-  const staticStyles = `
-    .solar-system-root {
-      position: relative;
-      width: 100%;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      padding: 5rem 0;
-    }
+  const hoverTimeoutRef = useRef<number | null>(null)
 
   return (
     <div className="w-full min-h-screen flex items-center justify-center relative bg-transperant overflow-hidden py-16">
-      {/* Events Header */}
-      <div className="absolute top-24 left-1/2 transform -translate-x-1/2 z-40 text-center">
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white drop-shadow-[0_0_15px_rgba(0,229,255,0.4)]">
-          Events
+      {/* EVENTS Header */}
+      <div className="absolute top-24 left-1/2 transform -translate-x-1/2 z-40">
+        <h1 className="text-4xl md:text-6xl font-black tracking-[0.25em] text-white drop-shadow-[0_0_15px_rgba(0,229,255,0.4)]">
+          EVENTS
         </h1>
-        <div className="w-24 h-1 bg-linear-to-r from-teal-400 to-transparent rounded-full mx-auto mt-4" />
       </div>
       <style>{`
         @keyframes orbit-0 {
@@ -236,627 +93,508 @@ export const SolarSystem = () => {
   to { transform: rotate(360deg) translateX(200px) rotate(-360deg); }
 }
 
-    .ss-info-card {
-      background: rgba(8, 10, 20, 0.88);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 18px;
-      padding: 20px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6), 0 0 80px rgba(0, 229, 255, 0.06);
-      overflow: hidden;
-      position: relative;
-    }
+@keyframes orbit-1 {
+  from { transform: rotate(120deg) translateX(360px) rotate(-120deg); }
+  to { transform: rotate(480deg) translateX(360px) rotate(-480deg); }
+}
 
-    .ss-info-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      border-radius: 18px 18px 0 0;
-    }
+@keyframes orbit-2 {
+  from { transform: rotate(240deg) translateX(520px) rotate(-240deg); }
+  to { transform: rotate(600deg) translateX(520px) rotate(-600deg); }
+}
 
-    .ss-info-card-image {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      overflow: hidden;
-      margin: 0 auto 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
+        @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 0 20px rgba(0, 229, 255, 0.4), inset 0 0 20px rgba(0, 229, 255, 0.1); }
+          50% { box-shadow: 0 0 40px rgba(0, 229, 255, 0.6), inset 0 0 20px rgba(0, 229, 255, 0.2); }
+        }
 
-    .ss-info-card h4 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 800;
-      color: white;
-      text-align: center;
-      letter-spacing: 0.04em;
-    }
+        @keyframes float-in {
+          from {
+            opacity: 0;
+            transform: scale(0.8);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
 
-    .ss-info-card .ss-info-type {
-      margin: 6px 0 0;
-      font-size: 11px;
-      font-weight: 600;
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-    }
+        @keyframes twinkle {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 1; }
+        }
 
-    .ss-info-card .ss-info-divider {
-      width: 40px;
-      height: 2px;
-      margin: 12px auto 0;
-      border-radius: 1px;
-      opacity: 0.5;
-    }
+        @keyframes glow-star-pulse {
+          0% { opacity: 0.35; transform: scale(0.92); }
+          50% { opacity: 1; transform: scale(1.06); }
+          100% { opacity: 0.35; transform: scale(0.96); }
+        }
 
-    /* ── Starfield ── */
-    .ss-starfield {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
-    }
+        .glow-star {
+          position: absolute;
+          border-radius: 50%;
+          pointer-events: none;
+          mix-blend-mode: screen;
+          filter: blur(6px);
+          will-change: transform, opacity;
+        }
 
-    .ss-star {
-      position: absolute;
-      background: white;
-      border-radius: 50%;
-      animation: twinkle 3s ease-in-out infinite;
-    }
+        @keyframes shoot {
+          0% { opacity: 0; transform: translateX(-10vw) translateY(0) rotate(25deg) scaleX(0.2); }
+          10% { opacity: 1; }
+          100% { opacity: 0; transform: translateX(120vw) translateY(40vh) rotate(25deg) scaleX(1); }
+        }
 
-    /* ── Container ── */
-    .ss-container {
-      position: relative;
-      width: 800px;
-      height: 800px;
-      z-index: 10;
-    }
+        .shooting-star {
+          position: absolute;
+          width: 2px;
+          height: 120px;
+          background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 45%, rgba(255,255,255,0.2) 70%, rgba(255,255,255,0) 100%);
+          border-radius: 50px;
+          filter: blur(2px);
+          transform-origin: 0 0;
+          pointer-events: none;
+          z-index: 5;
+          mix-blend-mode: screen;
+          will-change: transform, opacity;
+        }
 
-    .ss-container.paused .sun-orbit-wrapper,
-    .ss-container.paused .sun-counter-wrapper,
-    .ss-container.paused .track-orbit-wrapper,
-    .ss-container.paused .track-counter-wrapper {
-      animation-play-state: paused !important;
-    }
+        .starfield {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          z-index: 0;
+          overflow: hidden;
+        }
 
-    /* ── Orbit rings ── */
-    .ss-orbit-ring {
-      position: absolute;
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
+        .star {
+          position: absolute;
+          background: white;
+          border-radius: 50%;
+          animation: twinkle 3s ease-in-out infinite;
+        }
 
-    .ss-orbit-ring--primary {
-      border: 1px dashed rgba(0, 229, 255, 0.12);
-      box-shadow: 0 0 20px rgba(0, 229, 255, 0.05) inset;
-      animation: ring-pulse 6s ease-in-out infinite;
-    }
+        @keyframes pulse-glow-0 {
+          0%, 100% { box-shadow: 0 0 30px rgba(0, 229, 255, 0.4), 0 0 60px rgba(0, 229, 255, 0.2), inset 0 0 20px rgba(0, 229, 255, 0.2); }
+          50% { box-shadow: 0 0 60px rgba(0, 229, 255, 0.7), 0 0 120px rgba(0, 229, 255, 0.4), inset 0 0 30px rgba(0, 229, 255, 0.3); }
+        }
 
-    .ss-orbit-ring--secondary {
-      border: 1px dashed rgba(255, 255, 255, 0.08);
-    }
+        @keyframes pulse-glow-1 {
+          0%, 100% { box-shadow: 0 0 30px rgba(255, 159, 28, 0.4), 0 0 60px rgba(255, 159, 28, 0.2), inset 0 0 20px rgba(255, 159, 28, 0.2); }
+          50% { box-shadow: 0 0 60px rgba(255, 159, 28, 0.7), 0 0 120px rgba(255, 159, 28, 0.4), inset 0 0 30px rgba(255, 159, 28, 0.3); }
+        }
 
-    /* ── Center ISTE Bulb ── */
-    .ss-center {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, rgba(0, 229, 255, 0.8), rgba(0, 20, 40, 0.9));
-      border: 3px solid rgba(0, 229, 255, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-      animation: center-glow 4s ease-in-out infinite, float-in 0.8s ease-out;
-      cursor: default;
-    }
+        @keyframes pulse-glow-2 {
+          0%, 100% { box-shadow: 0 0 30px rgba(217, 70, 239, 0.4), 0 0 60px rgba(217, 70, 239, 0.2), inset 0 0 20px rgba(217, 70, 239, 0.2); }
+          50% { box-shadow: 0 0 60px rgba(217, 70, 239, 0.7), 0 0 120px rgba(217, 70, 239, 0.4), inset 0 0 30px rgba(217, 70, 239, 0.3); }
+        }
 
-    .ss-center-img {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.3);
-    }
+        @keyframes sun-glow-pulse {
+          0%, 100% { box-shadow: 0 0 60px rgba(0, 229, 255, 0.7), inset 0 0 40px rgba(0, 229, 255, 0.4), 0 0 120px rgba(0, 229, 255, 0.3); }
+          50% { box-shadow: 0 0 100px rgba(0, 229, 255, 0.9), inset 0 0 50px rgba(0, 229, 255, 0.5), 0 0 200px rgba(0, 229, 255, 0.5); }
+        }
 
-    /* ── Sun (primary orbiter) ── */
-    .sun-orbit-wrapper {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      will-change: transform;
-    }
+        @keyframes glow-expand {
+          0% { box-shadow: 0 0 5px currentColor, 0 0 10px currentColor; }
+          100% { box-shadow: 0 0 20px currentColor, 0 0 40px currentColor, 0 0 60px currentColor; }
+        }
 
-    .sun-counter-wrapper {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 0;
-      height: 0;
-      will-change: transform;
-    }
+        .orbital-container {
+          position: relative;
+        width: 1100px; 
+  height: 1100px;
+          margin: 0 auto;
+          perspective: 1200px;
+          transform-style: preserve-3d;
+        }
 
-    .ss-sun {
-      position: absolute;
-      width: 90px;
-      height: 90px;
-      left: -45px;
-      top: -45px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease;
-      z-index: 30;
-    }
+        .orbits-wrapper {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 100%;
+          height: 100%;
+          transform: translate(-50%, -50%) scaleY(0.62);
+          transform-origin: center;
+        }
 
-    .ss-sun:hover {
-      transform: scale(1.18);
-    }
+        .planet-image {
+          transform: scaleY(1.6129);
+          transform-origin: 50% 50%;
+        }
 
-    .ss-sun-img {
-      width: 76px;
-      height: 76px;
-      border-radius: 50%;
-      overflow: hidden;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: inset -15px -15px 30px rgba(0, 0, 0, 0.5),
-                  inset 10px 10px 20px rgba(255, 255, 255, 0.15);
-      transition: box-shadow 0.4s ease;
-    }
+        .orbital-background {
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(circle, rgba(0, 229, 255, 0.05) 0%, rgba(0, 229, 255, 0) 70%);
+          border-radius: 50%;
+          pointer-events: none;
+        }
 
-    .ss-sun-highlight {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: radial-gradient(circle at 30% 28%, rgba(255,255,255,0.25), rgba(255,255,255,0.05) 10%, rgba(0,0,0,0) 45%);
-      mix-blend-mode: screen;
-      border-radius: 50%;
-    }
+        .orbit-ring {
+          position: absolute;
+          border: 1px dashed rgba(0, 229, 255, 0.18);
+          border-radius: 50%;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          box-shadow: 0 0 20px rgba(0, 229, 255, 0.08) inset;
+        }
 
-    .ss-sun-label {
-      position: absolute;
-      bottom: -24px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 11px;
-      font-weight: 700;
-      white-space: nowrap;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      letter-spacing: 0.05em;
-      text-shadow: 0 0 12px currentColor;
-    }
+        .orbit-ring-1 { width: 400px; height: 400px; }
+.orbit-ring-2 { width: 720px; height: 720px; }
+.orbit-ring-3 { width: 1040px; height: 1040px; }
 
-    .ss-sun:hover .ss-sun-label {
-      opacity: 1;
-    }
+        .sun {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 120px;
+          height: 120px;
+          background: radial-gradient(circle at 35% 35%, rgba(0, 229, 255, 0.9), rgba(0, 229, 255, 0.1));
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 2px solid rgba(0, 229, 255, 0.5);
+          box-shadow: 0 0 60px rgba(0, 229, 255, 0.7), inset 0 0 40px rgba(0, 229, 255, 0.4), 0 0 120px rgba(0, 229, 255, 0.3);
+          z-index: 20;
+          animation: float-in 0.8s ease-out;
+        }
 
-    /* ── Track (secondary orbiter / planet) ── */
-    .track-orbit-wrapper {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 0;
-      height: 0;
-      will-change: transform;
-    }
+        .sun-image {
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          overflow: hidden;
+          box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.3);
+        }
 
-    .track-counter-wrapper {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 0;
-      height: 0;
-      will-change: transform;
-    }
+        .planet-container {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 0;
+          height: 0;
+          transition: animation-play-state 0.2s linear;
+          will-change: transform;
+        }
 
-    .ss-track {
-      position: absolute;
-      width: 52px;
-      height: 52px;
-      left: -26px;
-      top: -26px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border: 1.5px solid rgba(255, 255, 255, 0.2);
-      transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.35s ease, border-color 0.35s ease;
-      z-index: 25;
-    }
+        .planet-container:hover { animation-play-state: paused; }
 
-    .ss-track:hover {
-      transform: scale(1.25);
-      border-color: rgba(255, 255, 255, 0.6);
-    }
+        .orbital-container.paused .planet-container { animation-play-state: paused; }
 
-    .ss-track-img {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      overflow: hidden;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: inset -8px -8px 18px rgba(0, 0, 0, 0.5),
-                  inset 5px 5px 12px rgba(255, 255, 255, 0.12);
-      transition: box-shadow 0.35s ease;
-    }
+    .planet-orbit-0 { animation: orbit-0 40s linear infinite; } 
+.planet-orbit-1 { animation: orbit-1 55s linear infinite; }
+.planet-orbit-2 { animation: orbit-2 70s linear infinite; }
 
-    .ss-track-highlight {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: radial-gradient(circle at 30% 28%, rgba(255,255,255,0.2), rgba(0,0,0,0) 40%);
-      mix-blend-mode: screen;
-      border-radius: 50%;
-    }
+        .planet {
+          position: absolute;
+          width: 80px;       
+          height: 80px;      
+          left: -40px;       
+          top: -40px;       
+          cursor: pointer;
+          transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+        }
 
-    .ss-track-label {
-      position: absolute;
-      bottom: -20px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 9px;
-      font-weight: 600;
-      white-space: nowrap;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      color: rgba(255, 255, 255, 0.85);
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-    }
+        .planet.selected {
+          transform: scale(1.6);
+          z-index: 30;
+        }
 
-    .ss-track:hover .ss-track-label {
-      opacity: 1;
-    }
+        .planet-container:nth-child(4) .planet {
+          box-shadow: 0 0 45px rgba(0, 229, 255, 0.6), inset 0 0 25px rgba(0, 229, 255, 0.3);
+        }
 
+        .planet-container:nth-child(5) .planet {
+          box-shadow: 0 0 45px rgba(255, 159, 28, 0.6), inset 0 0 25px rgba(255, 159, 28, 0.3);
+        }
 
+        .planet-container:nth-child(6) .planet {
+          box-shadow: 0 0 45px rgba(217, 70, 239, 0.6), inset 0 0 25px rgba(217, 70, 239, 0.3);
+        }
 
-    /* ── Heading & CTA ── */
-    .ss-heading {
-      position: absolute;
-      top: clamp(2rem, 6vh, 5rem);
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 40;
-      text-align: center;
-    }
+        .planet.hovered {
+          width: 100px;      
+          height: 100px;     
+          left: -50px;       
+          top: -50px;        
+          border-width: 3px;
+        }
 
-    .ss-heading h1 {
-      margin: 0;
-      font-size: clamp(2rem, 5vw, 3.8rem);
-      font-weight: 900;
-      letter-spacing: 0.25em;
-      color: white;
-      text-shadow: 0 0 20px rgba(0, 229, 255, 0.35);
-    }
+        .planet-container:nth-child(4) .planet.hovered {
+          box-shadow: 0 0 80px rgba(0, 229, 255, 0.9), inset 0 0 40px rgba(0, 229, 255, 0.5), 0 0 150px rgba(0, 229, 255, 0.6);
+          border-color: rgba(0, 229, 255, 1);
+        }
 
-    .ss-heading-line {
-      margin: 0.6rem auto 0;
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.7), transparent);
-      border-radius: 2px;
-    }
+        .planet-container:nth-child(5) .planet.hovered {
+          box-shadow: 0 0 80px rgba(255, 159, 28, 0.9), inset 0 0 40px rgba(255, 159, 28, 0.5), 0 0 150px rgba(255, 159, 28, 0.6);
+          border-color: rgba(255, 159, 28, 1);
+        }
 
-    .ss-cta {
-      position: absolute;
-      bottom: clamp(1.5rem, 4vh, 3.5rem);
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 40;
-    }
+        .planet-container:nth-child(6) .planet.hovered {
+          box-shadow: 0 0 80px rgba(217, 70, 239, 0.9), inset 0 0 40px rgba(217, 70, 239, 0.5), 0 0 150px rgba(217, 70, 239, 0.6);
+          border-color: rgba(217, 70, 239, 1);
+        }
 
-    .ss-cta a {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 32px;
-      background: rgba(0, 229, 255, 0.08);
-      border: 1px solid rgba(0, 229, 255, 0.3);
-      border-radius: 100px;
-      color: rgba(0, 229, 255, 0.9);
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-decoration: none;
-      transition: all 0.35s ease;
-      backdrop-filter: blur(8px);
-    }
+        .planet-image {
+       width: 70px;       
+          height: 70px;
+          border-radius: 50%;
+          overflow: hidden;
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: inset -20px -20px 40px rgba(0, 0, 0, 0.6), inset 15px 15px 30px rgba(255, 255, 255, 0.2), inset 0 0 20px rgba(0, 0, 0, 0.3);
+          background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.1), transparent);
+          transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
 
-    .ss-cta a:hover {
-      background: rgba(0, 229, 255, 0.15);
-      border-color: rgba(0, 229, 255, 0.6);
-      box-shadow: 0 0 30px rgba(0, 229, 255, 0.2);
-      color: white;
-      transform: translateY(-2px);
-    }
+        .planet-image img {
+          display: block;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.36s cubic-bezier(0.34, 1.56, 0.64, 1);
+          transform-origin: 50% 50%;
+        }
 
-    .ss-cta-arrow {
-      transition: transform 0.3s ease;
-    }
+        .planet-highlight {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background: radial-gradient(circle at 30% 28%, rgba(255,255,255,0.28), rgba(255,255,255,0.06) 8%, rgba(0,0,0,0) 40%);
+          mix-blend-mode: screen;
+        }
 
-    .ss-cta a:hover .ss-cta-arrow {
-      transform: translateX(4px);
-    }
-  `
+        .planet.hovered .planet-image {
+          width: 90px;       
+          height: 90px;      
+          box-shadow: inset -25px -25px 50px rgba(0, 0, 0, 0.7), inset 20px 20px 40px rgba(255, 255, 255, 0.3), inset 0 0 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(0, 229, 255, 0.4);
+        }
 
-  // ─── Stars (deterministic via index-based seeding) ────────────────────
-  const stars = useMemo(() => {
-    return Array.from({ length: 60 }, (_, i) => {
-      const seed = (i * 7919 + 104729) % 100000
-      const x = (seed % 1000) / 10
-      const y = ((seed * 3 + 17) % 1000) / 10
-      const size = ((seed % 25) + 6) / 10
-      const delay = ((seed % 30)) / 10
-      const opacity = 0.4 + ((seed % 50) / 100)
-      return { x, y, size, delay, opacity }
-    })
-  }, [])
+        .planet-container:nth-child(4) .planet.hovered .planet-image {
+          box-shadow: inset -25px -25px 50px rgba(0, 0, 0, 0.7), inset 20px 20px 40px rgba(0, 229, 255, 0.3), inset 0 0 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(0, 229, 255, 0.5);
+        }
 
-  // ─── Info card state ──────────────────────────────────────────────────
-  const [cardInfo, setCardInfo] = useState<{ title: string; type: string; image: string; color: string } | null>(null)
+        .planet-container:nth-child(5) .planet.hovered .planet-image {
+          box-shadow: inset -25px -25px 50px rgba(0, 0, 0, 0.7), inset 20px 20px 40px rgba(255, 159, 28, 0.3), inset 0 0 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(255, 159, 28, 0.5);
+        }
 
-  const handleHoverEnter = (id: string, title: string, type: string, image: string, color: string) => {
-    if (hoverTimeout.current) clearTimeout(hoverTimeout.current)
-    setHoveredId(id)
-    setIsPaused(true)
-    setCardInfo({ title, type, image, color })
-  }
+        .planet-container:nth-child(6) .planet.hovered .planet-image {
+          box-shadow: inset -25px -25px 50px rgba(0, 0, 0, 0.7), inset 20px 20px 40px rgba(217, 70, 239, 0.3), inset 0 0 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(217, 70, 239, 0.5);
+        }
 
-  const handleHoverLeave = () => {
-    hoverTimeout.current = setTimeout(() => {
-      setHoveredId(null)
-      setIsPaused(false)
-      setCardInfo(null)
-    }, 200)
-  }
+        .planet-label {
+          position: absolute;
+          bottom: -25px;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: 11px;
+          font-weight: 600;
+          color: #00E5FF;
+          white-space: nowrap;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
 
-  return (
-    <div className="solar-system-root">
-      <style>{generatedStyles}</style>
-      <style>{staticStyles}</style>
-
-      {/* ── Heading ── */}
-      <div className="ss-heading">
-        <h1>EVENTS</h1>
-        <div className="ss-heading-line" />
-      </div>
-
-      {/* ── Starfield ── */}
-      <div className="ss-starfield">
-        {stars.map((s, i) => (
-          <div
-            key={`star-${i}`}
-            className="ss-star"
-            style={{
-              width: `${s.size}px`,
-              height: `${s.size}px`,
-              left: `${s.x}%`,
-              top: `${s.y}%`,
-              opacity: s.opacity,
-              animationDelay: `${s.delay}s`,
-              boxShadow: `0 0 ${s.size * 2}px rgba(255,255,255,0.6)`
-            }}
-          />
-        ))}
-      </div>
-
-      {/* ── Orbital Container ── */}
-      <div className={`ss-container ${isPaused ? 'paused' : ''}`}>
-
-        {/* Primary orbit ring */}
-        <div
-          className="ss-orbit-ring ss-orbit-ring--primary"
-          style={{
-            width: `${orbitalData[0].radius * 2}px`,
-            height: `${orbitalData[0].radius * 2}px`,
-          }}
-        />
-
-        {/* ── Suns (primary orbiters) ── */}
-        {orbitalData.map((sun, idx) => (
-          <React.Fragment key={sun.id}>
-            {/* Outer wrapper: handles orbital path */}
+        .planet.hovered .planet-label {
+          opacity: 1;
+        }
+      `}</style>
+{/* 
+      <div className="starfield">
+        {Array.from({ length: 40 }).map((_, i) => {
+          const colors = [
+            'rgba(255, 255, 255, 1)',
+            'rgba(150, 200, 255, 0.95)',
+            'rgba(0, 229, 255, 0.95)',
+            'rgba(200, 150, 255, 0.9)',
+            'rgba(255, 230, 200, 0.9)',
+            'rgba(100, 200, 255, 0.95)',
+          ]
+          const color = colors[Math.floor(Math.random() * colors.length)]
+          return (
             <div
-              className="sun-orbit-wrapper"
+              key={`star-${i}`}
+              className="star"
               style={{
-                animation: `sun-orbit-${sun.id} ${sun.speed}s linear infinite`,
+                width: Math.random() * 2.5 + 0.6 + 'px',
+                height: Math.random() * 2.5 + 0.6 + 'px',
+                left: Math.random() * 100 + '%',
+                top: Math.random() * 100 + '%',
+                opacity: Math.random() * 0.5 + 0.6,
+                animationDelay: Math.random() * 3 + 's',
+                backgroundColor: color,
+                boxShadow: `0 0 ${Math.random() * 4 + 3}px ${color}`
+              }}
+            />
+          )
+        })}
+
+        {Array.from({ length: 8}).map((_, i) => {
+          const gradients = [
+            `radial-gradient(circle, rgba(255,255,255,${Math.random() * 0.9 + 0.5}) 0%, rgba(255,255,255,0.15) 35%, rgba(0,0,0,0) 60%)`,
+            `radial-gradient(circle, rgba(0,229,255,${Math.random() * 0.85 + 0.4}) 0%, rgba(0,229,255,0.12) 35%, rgba(0,0,0,0) 60%)`,
+            `radial-gradient(circle, rgba(150,200,255,${Math.random() * 0.8 + 0.4}) 0%, rgba(150,200,255,0.12) 35%, rgba(0,0,0,0) 60%)`,
+            `radial-gradient(circle, rgba(200,100,255,${Math.random() * 0.8 + 0.4}) 0%, rgba(200,100,255,0.12) 35%, rgba(0,0,0,0) 60%)`,
+            `radial-gradient(circle, rgba(255,200,150,${Math.random() * 0.8 + 0.4}) 0%, rgba(255,200,150,0.12) 35%, rgba(0,0,0,0) 60%)`,
+          ]
+          return (
+            <div
+              key={`gstar-${i}`}
+              className="glow-star"
+              style={{
+                width: `${Math.random() * 32 + 8}px`,
+                height: `${Math.random() * 32 + 8}px`,
+                left: Math.random() * 100 + '%',
+                top: Math.random() * 100 + '%',
+                opacity: Math.random() * 0.5 + 0.35,
+                background: gradients[Math.floor(Math.random() * gradients.length)],
+                animation: `glow-star-pulse ${Math.random() * 8 + 6}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 6}s`,
+              }}
+            />
+          )
+        })}
+
+      </div> */}
+
+      <div className={`orbital-container ${hoveredPlanet !== null ? 'paused' : ''}`} onMouseMove={handleMouseMove} onMouseLeave={() => setHoveredPlanet(null)}>
+        <div className="orbital-background"></div>
+
+        <div className="orbits-wrapper">
+          <div className="orbit-ring orbit-ring-1"></div>
+          <div className="orbit-ring orbit-ring-2"></div>
+          <div className="orbit-ring orbit-ring-3"></div>
+
+          {planets.map((planet) => {
+          const min = Math.min(...planets.map((p) => p.radius))
+          const max = Math.max(...planets.map((p) => p.radius))
+          const t = (planet.radius - min) / (max - min || 1)
+          const scale = 1.08 - t * 0.18
+
+          return (
+            <div
+              key={planet.id}
+              className={`planet-container planet-orbit-${planet.id}`}
+              onMouseEnter={(e) => handlePlanetHover(planet.id, e)}
+              onMouseLeave={() => {
+                hoverTimeoutRef.current = window.setTimeout(() => setHoveredPlanet(null), 180)
               }}
             >
-              {/* Inner wrapper: counter-rotates to keep content upright */}
               <div
-                className="sun-counter-wrapper"
-                style={{
-                  animation: `sun-counter-${sun.id} ${sun.speed}s linear infinite`,
-                }}
+                onClick={() => handlePlanetClick(planet.id)}
+                onDoubleClick={() => handlePlanetDoubleClick(planet.link)}
+                className={`planet ${hoveredPlanet === planet.id ? 'hovered' : ''} ${selectedPlanet === planet.id ? 'selected' : ''}`}
+                style={{ transform: `scale(${selectedPlanet === planet.id ? 1.6 : hoveredPlanet === planet.id ? 1.18 : scale})` }}
               >
-                {/* Secondary orbit ring (drawn relative to sun's position) */}
-                <div
-                  className="ss-orbit-ring ss-orbit-ring--secondary"
-                  style={{
-                    width: `${(sun.tracks[0]?.radius ?? 100) * 2}px`,
-                    height: `${(sun.tracks[0]?.radius ?? 100) * 2}px`,
-                    top: '0',
-                    left: '0',
-                  }}
-                />
-
-                {/* The Sun node itself */}
-                <div
-                  className="ss-sun"
-                  style={{
-                    background: `radial-gradient(circle at 35% 35%, rgba(${sun.color}, 0.85), rgba(${sun.color}, 0.15))`,
-                    border: `2px solid rgba(${sun.color}, 0.5)`,
-                    boxShadow: hoveredId === `sun-${sun.id}`
-                      ? `0 0 70px rgba(${sun.color}, 0.9), inset 0 0 30px rgba(${sun.color}, 0.4), 0 0 140px rgba(${sun.color}, 0.5)`
-                      : `0 0 35px rgba(${sun.color}, 0.5), inset 0 0 20px rgba(${sun.color}, 0.2)`,
-                  }}
-                  onMouseEnter={() => handleHoverEnter(`sun-${sun.id}`, sun.title, 'Main Event', sun.image, sun.color)}
-                  onMouseLeave={handleHoverLeave}
-                >
-                  <div className="ss-sun-img">
-                    <Image
-                      src={sun.image}
-                      alt={sun.title}
-                      width={76}
-                      height={76}
-                      className="w-full h-full object-cover"
-                      style={{ borderRadius: '50%' }}
-                    />
-                    <div className="ss-sun-highlight" />
-                  </div>
-                  <div className="ss-sun-label" style={{ color: `rgba(${sun.color}, 1)` }}>
-                    {sun.title}
-                  </div>
+                <div className="planet-image">
+                  <Image
+                    src={planet.image}
+                    alt={planet.title}
+                    width={70}     
+                    height={70}    
+                    className="w-full h-full object-cover"
+                    style={{ transform: 'rotate(0deg)', transformOrigin: '50% 50%' }}
+                  />
+                  <div className="planet-highlight" aria-hidden />
                 </div>
-
-                {/* ── Tracks (secondary orbiters / planets) ── */}
-                {sun.tracks.map((track) => (
-                  <div
-                    key={track.id}
-                    className="track-orbit-wrapper"
-                    style={{
-                      animation: `track-orbit-${track.id} ${track.speed}s linear infinite`,
-                    }}
-                  >
-                    {/* Counter-rotate by track's own angle only.
-                        The sun's rotation is already cancelled by sun-counter-wrapper,
-                        so we don't need to cancel it again here. */}
-                    <div
-                      className="track-counter-wrapper"
-                      style={{
-                        animation: `track-counter-${track.id} ${track.speed}s linear infinite`,
-                      }}
-                    >
-                      <div
-                        className="ss-track"
-                        style={{
-                          boxShadow: hoveredId === `track-${track.id}`
-                            ? `0 0 40px rgba(${sun.color}, 0.7), inset 0 0 15px rgba(${sun.color}, 0.3)`
-                            : `0 0 18px rgba(${sun.color}, 0.35), inset 0 0 8px rgba(${sun.color}, 0.15)`,
-                        }}
-                        onMouseEnter={() => handleHoverEnter(`track-${track.id}`, track.title, `${sun.title} Track`, track.image, sun.color)}
-                        onMouseLeave={handleHoverLeave}
-                      >
-                        <div className="ss-track-img">
-                          <Image
-                            src={track.image}
-                            alt={track.title}
-                            width={42}
-                            height={42}
-                            className="w-full h-full object-cover"
-                            style={{ borderRadius: '50%' }}
-                          />
-                          <div className="ss-track-highlight" />
-                        </div>
-                        <div className="ss-track-label">{track.title}</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                <div className="planet-label">{planet.title}</div>
               </div>
             </div>
-          </React.Fragment>
-        ))}
+          )
+          })}
+        </div>
 
-        {/* ── Central ISTE Bulb ── */}
-        <div className="ss-center">
-          <div className="ss-center-img">
+        <div className="sun">
+          <div className="sun-image">
             <Image
-              src="/images/iste_transparent.png"
-              alt="ISTE Bulb Logo"
-              width={150}
-              height={150}
-              className="w-full h-full object-contain"
-              style={{ borderRadius: '50%' }}
+              src="/download (1).png"
+              alt="ISTE Logo"
+              width={85}
+              height={85}
+              className="w-full h-full object-contain bg-black/30 rounded-full"
             />
           </div>
         </div>
 
-        {/* ── Info Card (right side) ── */}
-        {cardInfo && (
-          <div className="ss-info-panel" key={cardInfo.title}>
-            <div
-              className="ss-info-card"
-              style={{
-                borderColor: `rgba(${cardInfo.color}, 0.25)`,
-              }}
-            >
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '3px',
-                  background: `linear-gradient(90deg, transparent, rgba(${cardInfo.color}, 0.8), transparent)`,
-                  borderRadius: '18px 18px 0 0',
-                }}
-              />
-              <div
-                className="ss-info-card-image"
-                style={{
-                  boxShadow: `0 0 30px rgba(${cardInfo.color}, 0.4), 0 0 60px rgba(${cardInfo.color}, 0.15)`,
-                  border: `2px solid rgba(${cardInfo.color}, 0.4)`,
-                }}
-              >
-                <Image
-                  src={cardInfo.image}
-                  alt={cardInfo.title}
-                  width={72}
-                  height={72}
-                  className="w-full h-full object-cover"
-                  style={{ borderRadius: '50%' }}
-                />
-              </div>
-              <h4>{cardInfo.title}</h4>
-              <p className="ss-info-type" style={{ color: `rgba(${cardInfo.color}, 0.9)` }}>
-                {cardInfo.type}
-              </p>
-              <div
-                className="ss-info-divider"
-                style={{ background: `rgba(${cardInfo.color}, 0.6)` }}
-              />
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* ── Explore More CTA ── */}
-      <div className="ss-cta">
-        <Link href="/events">
-          Explore more
-          <span className="ss-cta-arrow">→</span>
-        </Link>
-      </div>
+      {hoveredPlanet !== null && (
+        <div
+          className="fixed z-50"
+          onMouseEnter={() => {
+            if (hoverTimeoutRef.current) {
+              window.clearTimeout(hoverTimeoutRef.current)
+              hoverTimeoutRef.current = null
+            }
+          }}
+          onMouseLeave={() => setHoveredPlanet(null)}
+          style={{
+            left: `${tooltipPos.x}px`,
+            top: `${tooltipPos.y}px`,
+            transform: 'translateY(-50%)'
+          }}
+        >
+          <div className="bg-black/70 border border-white/10 rounded-xl p-4 w-80 shadow-2xl backdrop-blur-sm">
+            <h3 className="font-bold text-white mb-2 text-lg">{planets[hoveredPlanet].title}</h3>
+            <p className="text-gray-200 text-sm leading-relaxed">{planets[hoveredPlanet].description}</p>
+            <div className="mt-3 flex gap-2">
+              <Image src={planets[hoveredPlanet].image} alt={planets[hoveredPlanet].title} width={64} height={64} className="rounded-full" />
+              <div>
+                <div className="text-xs text-white/70">Tags</div>
+                <div className="flex gap-2 mt-1">
+                  <span className="text-xs px-2 py-1 rounded bg-white/6">Team</span>
+                  <span className="text-xs px-2 py-1 rounded bg-white/6">Puzzle</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedPlanet !== null && (
+        <div className="fixed right-8 top-1/4 z-50">
+          <div className="bg-black/60 border border-white/10 rounded-2xl p-6 w-96 backdrop-blur-md shadow-2xl">
+            <div className="flex justify-between items-start gap-4">
+              <h3 className="text-2xl font-bold text-white">{planets[selectedPlanet].title}</h3>
+              <button
+                onClick={() => setSelectedPlanet(null)}
+                className="text-white/70 hover:text-white"
+                aria-label="Close event card"
+              >
+                ✕
+              </button>
+            </div>
+            <p className="text-sm text-gray-200 mt-3 leading-relaxed">{planets[selectedPlanet].description}</p>
+            <div className="mt-4 flex items-center gap-3">
+              <div className="w-20 h-20 rounded-full overflow-hidden border border-white/10">
+                <Image src={planets[selectedPlanet].image} alt={planets[selectedPlanet].title} width={80} height={80} className="object-cover w-full h-full" />
+              </div>
+              <div>
+                <div className="text-xs text-white/70">Tags</div>
+                <div className="flex gap-2 mt-2">
+                  <span className="text-xs px-2 py-1 rounded bg-white/6">Team</span>
+                  <span className="text-xs px-2 py-1 rounded bg-white/6">Puzzle</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

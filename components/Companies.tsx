@@ -6,21 +6,19 @@ import Image from "next/image";
 const companies = [
   { name: "Google", logo: "/logos/google.svg", color: "group-hover:shadow-[0_0_20px_rgba(66,133,244,0.5)] group-hover:border-[#4285F4]" },
   { name: "Microsoft", logo: "/logos/microsoft.svg", color: "group-hover:shadow-[0_0_20px_rgba(0,164,239,0.5)] group-hover:border-[#00A4EF]" },
-  { name: "Amazon", logo: "/logos/amazon.svg", color: "group-hover:shadow-[0_0_20px_rgba(255,153,0,0.5)] group-hover:border-[#FF9900]" },
-  { name: "Meta", logo: "/logos/meta.svg", color: "group-hover:shadow-[0_0_20px_rgba(6,104,225,0.5)] group-hover:border-[#0668E1]" },
-  { name: "Apple", logo: "/logos/apple.svg", color: "group-hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] group-hover:border-white" },
-  { name: "Netflix", logo: "/logos/netflix.svg", color: "group-hover:shadow-[0_0_20px_rgba(229,9,20,0.5)] group-hover:border-[#E50914]" },
-  { name: "Adobe", logo: "/logos/adobe.svg", color: "group-hover:shadow-[0_0_20px_rgba(255,0,0,0.5)] group-hover:border-[#FF0000]" },
-  { name: "Nvidia", logo: "/logos/nvidia.svg", color: "group-hover:shadow-[0_0_20px_rgba(118,185,0,0.5)] group-hover:border-[#76B900]" },
-  { name: "Intel", logo: "/logos/intel.svg", color: "group-hover:shadow-[0_0_20px_rgba(0,113,197,0.5)] group-hover:border-[#0071C5]" },
-  { name: "IBM", logo: "/logos/ibm.svg", color: "group-hover:shadow-[0_0_20px_rgba(5,48,173,0.5)] group-hover:border-[#0530AD]" },
-  { name: "Salesforce", logo: "/logos/salesforce.svg", color: "group-hover:shadow-[0_0_20px_rgba(0,161,224,0.5)] group-hover:border-[#00A1E0]" },
+  { name: "PhonePe", logo: "/logos/phonepe.svg", color: "group-hover:shadow-[0_0_20px_rgba(91,33,182,0.5)] group-hover:border-[#5B21B6]" },
+  { name: "Arista", logo: "/logos/arista.svg", color: "group-hover:shadow-[0_0_20px_rgba(0,102,204,0.5)] group-hover:border-[#0066CC]" },
   { name: "Oracle", logo: "/logos/oracle.svg", color: "group-hover:shadow-[0_0_20px_rgba(248,0,0,0.5)] group-hover:border-[#F80000]" },
-  { name: "LinkedIn", logo: "/logos/linkedin.svg", color: "group-hover:shadow-[0_0_20px_rgba(10,102,194,0.5)] group-hover:border-[#0A66C2]" },
-  { name: "Spotify", logo: "/logos/spotify.svg", color: "group-hover:shadow-[0_0_20px_rgba(30,215,96,0.5)] group-hover:border-[#1ED760]" },
-  { name: "Atlassian", logo: "/logos/atlassian.svg", color: "group-hover:shadow-[0_0_20px_rgba(0,82,204,0.5)] group-hover:border-[#0052CC]" },
-];
-
+  { name: "Wells Fargo", logo: "/logos/wellsfargo.svg", color: "group-hover:shadow-[0_0_20px_rgba(204,0,0,0.5)] group-hover:border-[#CC0000]" },
+  { name: "Flipkart", logo: "/logos/flipkart.svg", color: "group-hover:shadow-[0_0_20px_rgba(40,116,240,0.5)] group-hover:border-[#2874F0]" },
+  { name: "Visa", logo: "/logos/visa.svg", color: "group-hover:shadow-[0_0_20px_rgba(26,31,113,0.5)] group-hover:border-[#1A1F71]" },
+  { name: "SAP Labs", logo: "/logos/saplabs.svg", color: "group-hover:shadow-[0_0_20px_rgba(0,157,224,0.5)] group-hover:border-[#009DE0]" },
+  { name: "Amazon", logo: "/logos/amazon.svg", color: "group-hover:shadow-[0_0_20px_rgba(255,153,0,0.5)] group-hover:border-[#FF9900]" },
+  { name: "Qualcomm", logo: "/logos/qualcomm.svg", color: "group-hover:shadow-[0_0_20px_rgba(0,102,177,0.5)] group-hover:border-[#0066B1]" },
+  { name: "ExxonMobil", logo: "/logos/exxonmobil.svg", color: "group-hover:shadow-[0_0_20px_rgba(239,0,0,0.5)] group-hover:border-[#EF0000]" },
+  { name: "citi", logo: "/logos/citi.svg", color: "group-hover:shadow-[0_0_20px_rgba(0,102,204,0.5)] group-hover:border-[#0066CC]" },
+  
+]
 const row1 = companies.slice(0, 8);
 const row2 = companies.slice(8, 15);
 

@@ -9,7 +9,6 @@ import Companies from "@/components/Companies";
 // import { TeamStrip } from "@/components/ui/team-strip"; 
 import { consumeSkipNextHomeLoader } from "@/lib/home-loader-skip";
 import SolarSystem from "@/components/SolarSystem";
-import Companies from "@/components/Companies";
 
 const World = dynamic(() => import("@/components/ui/globe").then((m) => m.World), {
   ssr: false,
