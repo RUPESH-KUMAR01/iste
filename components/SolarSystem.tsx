@@ -73,9 +73,13 @@ const SolarSystem = () => {
   const handleMouseMove = (e: React.MouseEvent) => {
   }
 
-  const handlePlanetClick = (planetId: number) => {
-    setSelectedPlanet((prev) => (prev === planetId ? null : planetId))
+  const handlePlanetClick = (planetId: number, link: string) => {
+  if (selectedPlanet === planetId) {
+    handlePlanetDoubleClick(link); 
+  } else {
+    setSelectedPlanet(planetId);
   }
+};
 
   const hoverTimeoutRef = useRef<number | null>(null)
 
@@ -496,7 +500,7 @@ const SolarSystem = () => {
               }}
             >
               <div
-                onClick={() => handlePlanetClick(planet.id)}
+                onClick={() => handlePlanetClick(planet.id,planet.link)}
                 onDoubleClick={() => handlePlanetDoubleClick(planet.link)}
                 className={`planet ${hoveredPlanet === planet.id ? 'hovered' : ''} ${selectedPlanet === planet.id ? 'selected' : ''}`}
                 style={{ transform: `scale(${selectedPlanet === planet.id ? 1.6 : hoveredPlanet === planet.id ? 1.18 : scale})` }}
